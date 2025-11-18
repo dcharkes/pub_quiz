@@ -15,23 +15,31 @@ import 'question.dart' as _i2;
 /// A quiz.
 abstract class Quiz implements _i1.SerializableModel {
   Quiz._({
+    this.id,
     required this.title,
     required this.questions,
   });
 
   factory Quiz({
+    int? id,
     required String title,
     required List<_i2.Question> questions,
   }) = _QuizImpl;
 
   factory Quiz.fromJson(Map<String, dynamic> jsonSerialization) {
     return Quiz(
+      id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
       questions: (jsonSerialization['questions'] as List)
           .map((e) => _i2.Question.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
+
+  /// The database id, set if the object has been inserted into the
+  /// database or if it has been fetched from the database. Otherwise,
+  /// the id will be null.
+  int? id;
 
   /// The title of the quiz.
   String title;
@@ -43,12 +51,14 @@ abstract class Quiz implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Quiz copyWith({
+    int? id,
     String? title,
     List<_i2.Question>? questions,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       'title': title,
       'questions': questions.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -60,11 +70,15 @@ abstract class Quiz implements _i1.SerializableModel {
   }
 }
 
+class _Undefined {}
+
 class _QuizImpl extends Quiz {
   _QuizImpl({
+    int? id,
     required String title,
     required List<_i2.Question> questions,
   }) : super._(
+          id: id,
           title: title,
           questions: questions,
         );
@@ -74,10 +88,12 @@ class _QuizImpl extends Quiz {
   @_i1.useResult
   @override
   Quiz copyWith({
+    Object? id = _Undefined,
     String? title,
     List<_i2.Question>? questions,
   }) {
     return Quiz(
+      id: id is int? ? id : this.id,
       title: title ?? this.title,
       questions:
           questions ?? this.questions.map((e0) => e0.copyWith()).toList(),

@@ -14,21 +14,29 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 /// An answer to a question.
 abstract class Answer implements _i1.SerializableModel {
   Answer._({
+    this.id,
     required this.text,
     required this.correct,
   });
 
   factory Answer({
+    int? id,
     required String text,
     required bool correct,
   }) = _AnswerImpl;
 
   factory Answer.fromJson(Map<String, dynamic> jsonSerialization) {
     return Answer(
+      id: jsonSerialization['id'] as int?,
       text: jsonSerialization['text'] as String,
       correct: jsonSerialization['correct'] as bool,
     );
   }
+
+  /// The database id, set if the object has been inserted into the
+  /// database or if it has been fetched from the database. Otherwise,
+  /// the id will be null.
+  int? id;
 
   /// The text representation of this answer.
   String text;
@@ -40,12 +48,14 @@ abstract class Answer implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Answer copyWith({
+    int? id,
     String? text,
     bool? correct,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       'text': text,
       'correct': correct,
     };
@@ -57,11 +67,15 @@ abstract class Answer implements _i1.SerializableModel {
   }
 }
 
+class _Undefined {}
+
 class _AnswerImpl extends Answer {
   _AnswerImpl({
+    int? id,
     required String text,
     required bool correct,
   }) : super._(
+          id: id,
           text: text,
           correct: correct,
         );
@@ -71,10 +85,12 @@ class _AnswerImpl extends Answer {
   @_i1.useResult
   @override
   Answer copyWith({
+    Object? id = _Undefined,
     String? text,
     bool? correct,
   }) {
     return Answer(
+      id: id is int? ? id : this.id,
       text: text ?? this.text,
       correct: correct ?? this.correct,
     );

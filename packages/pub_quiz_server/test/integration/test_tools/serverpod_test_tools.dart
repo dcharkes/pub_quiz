@@ -102,6 +102,8 @@ void withServerpod(
 
 class TestEndpoints {
   late final _GreetingEndpoint greeting;
+
+  late final _QuizEndpoint quiz;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -112,6 +114,10 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.EndpointDispatch endpoints,
   ) {
     greeting = _GreetingEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    quiz = _QuizEndpoint(
       endpoints,
       serializationManager,
     );
@@ -156,4 +162,11 @@ class _GreetingEndpoint {
       }
     });
   }
+}
+
+class _QuizEndpoint {
+  _QuizEndpoint(
+    _endpointDispatch,
+    _serializationManager,
+  );
 }

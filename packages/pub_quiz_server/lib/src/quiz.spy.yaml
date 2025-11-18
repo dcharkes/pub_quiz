@@ -1,6 +1,8 @@
 ### A quiz.
 class: Quiz
 
+table: quiz
+
 fields:
   ### The title of the quiz.
   title: String

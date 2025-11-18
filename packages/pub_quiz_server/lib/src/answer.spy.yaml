@@ -1,6 +1,8 @@
 ### An answer to a question.
 class: Answer
 
+table: answer
+
 fields:
   ### The text representation of this answer.
   text: String

@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../greeting_endpoint.dart' as _i2;
+import '../quiz_endpoint.dart' as _i3;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -21,7 +22,13 @@ class Endpoints extends _i1.EndpointDispatch {
           server,
           'greeting',
           null,
-        )
+        ),
+      'quiz': _i3.QuizEndpoint()
+        ..initialize(
+          server,
+          'quiz',
+          null,
+        ),
     };
     connectors['greeting'] = _i1.EndpointConnector(
       name: 'greeting',
@@ -46,6 +53,11 @@ class Endpoints extends _i1.EndpointDispatch {
           ),
         )
       },
+    );
+    connectors['quiz'] = _i1.EndpointConnector(
+      name: 'quiz',
+      endpoint: endpoints['quiz']!,
+      methodConnectors: {},
     );
   }
 }

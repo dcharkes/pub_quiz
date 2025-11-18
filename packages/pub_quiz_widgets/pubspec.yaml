@@ -1,5 +1,5 @@
-name: pub_quiz_tv
-description: The TV display for the Pub Quiz, built with Flutter.
+name: pub_quiz_widgets
+description: Shared widgets of the TV and Mobile Apps.
 publish_to: none
 
 environment:
@@ -8,6 +8,10 @@ environment:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Google Sans Flex
+      fonts:
+        - asset: fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf
 
 resolution: workspace
 
@@ -16,10 +20,6 @@ dependencies:
     sdk: flutter
   pub_quiz_shared:
     path: ../pub_quiz_shared
-  pub_quiz_widgets:
-    path: ../pub_quiz_widgets
-  go_router: ^17.0.0
-  serverpod_flutter: ^2.9.2
 
 dev_dependencies:
   dart_flutter_team_lints: ^3.5.2

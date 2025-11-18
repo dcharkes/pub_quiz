@@ -12,6 +12,7 @@ workspace:
   - packages/pub_quiz_server
   - packages/pub_quiz_shared
   - packages/pub_quiz_tv
+  - packages/pub_quiz_widgets
 
 dev_dependencies:
   dart_flutter_team_lints: ^3.5.2

@@ -1,19 +1,47 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
+import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 import 'components/header.dart';
 import 'pages/editor.dart';
 import 'pages/home.dart';
 
-// The main component of your application.
+final quizzes = {
+  123: Quiz(
+    title: 'Quiz 1',
+    questions: [
+      Question(
+        question: 'Question 1',
+        answers: [
+          Answer(text: 'Answer 1', correct: true),
+          Answer(text: 'Answer 2', correct: true),
+          Answer(text: 'Answer 3', correct: true),
+          Answer(text: 'Answer 4', correct: true),
+        ],
+      ),
+    ],
+  )..id = 123,
+  456: Quiz(
+    title: 'Quiz 2',
+    questions: [
+      Question(
+        question: 'Question 1',
+        answers: [
+          Answer(text: 'Answer 1', correct: true),
+          Answer(text: 'Answer 2', correct: true),
+          Answer(text: 'Answer 3', correct: true),
+          Answer(text: 'Answer 4', correct: true),
+        ],
+      ),
+    ],
+  )..id = 456,
+};
+
 class App extends StatelessComponent {
   const App({super.key});
 
   @override
   Component build(BuildContext context) {
-    // This method is rerun every time the component is rebuilt.
-
-    // Renders a <div class="main"> html element with children.
     return div(classes: 'main', [
       Router(
         routes: [
@@ -29,9 +57,17 @@ class App extends StatelessComponent {
                 builder: (context, state) => const Home(),
               ),
               Route(
-                path: '/editor',
+                path: '/edit',
                 title: 'Quiz Editor',
                 builder: (context, state) => const QuizEditor(),
+              ),
+              Route(
+                path: '/edit/:quizId',
+                title: 'Quiz Editor',
+                builder: (context, state) {
+                  final quiz = quizzes[int.parse(state.params['quizId']!)];
+                  return QuizEditor(quiz: quiz);
+                },
               ),
             ],
           ),

@@ -25,9 +25,9 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
     });
   }
 
-  void _onAnswerCorrectChange(int index, bool? isCorrect) {
+  void _onAnswerCorrectChange(int index, bool isCorrect) {
     setState(() {
-      component.question.answers[index].correct = isCorrect ?? false;
+      component.question.answers[index].correct = isCorrect;
     });
   }
 
@@ -87,18 +87,6 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
                         ),
                         text('Correct'),
                       ]),
-                      button(
-                        classes: 'delete-answer-button',
-                        onClick: () {
-                          // TODO(goderbauer): Handle delete answer button press.
-                        },
-                        [
-                          i(
-                            classes: 'material-icons md-18',
-                            [text('delete')],
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ],

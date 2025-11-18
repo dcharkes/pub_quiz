@@ -5,15 +5,18 @@ import 'package:pub_quiz_client/pub_quiz_client.dart';
 import '../components/question_editor.dart';
 
 class QuizEditor extends StatefulComponent {
-  const QuizEditor({super.key});
+  const QuizEditor({super.key, this.quiz});
+
+  final Quiz? quiz;
 
   @override
   State<QuizEditor> createState() => _CounterState();
 }
 
 class _CounterState extends State<QuizEditor> {
-  String title = '';
-  List<Question> questions = [];
+  late final _quizCache = Quiz(title: '', questions: []);
+
+  Quiz get quiz => component.quiz ?? _quizCache;
 
   @override
   Component build(BuildContext context) {
@@ -26,13 +29,13 @@ class _CounterState extends State<QuizEditor> {
           input(
             id: 'quiz-title',
             type: InputType.text,
-            value: title,
+            value: quiz.title,
             attributes: {
               'placeholder': 'Enter quiz title',
             },
             onInput: (value) {
               setState(() {
-                title = value as String;
+                quiz.title = value as String;
               });
             },
           ),
@@ -41,13 +44,14 @@ class _CounterState extends State<QuizEditor> {
       div(
         classes: 'question-list',
         [
-          for (final question in questions) QuestionEditor(question: question),
+          for (final question in quiz.questions)
+            QuestionEditor(question: question),
         ],
       ),
       button(
         onClick: () {
           setState(() {
-            questions.add(
+            quiz.questions.add(
               Question(
                 question: '',
                 answers: List.generate(

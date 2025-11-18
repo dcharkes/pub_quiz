@@ -1,4 +1,5 @@
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_router/jaspr_router.dart';
 
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
@@ -19,7 +20,7 @@ class QuizList extends StatelessComponent {
                 span([text(quiz.title)]),
                 button(
                   onClick: () {
-                    // Handle edit button press
+                    Router.of(context).push('/edit/${quiz.id}');
                   },
                   [
                     i(classes: 'material-icons md-18', [text('edit')]),

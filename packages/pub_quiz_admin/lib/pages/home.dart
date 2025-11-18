@@ -2,6 +2,7 @@ import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
+import '../app.dart';
 import '../components/quiz_list.dart';
 
 class Home extends StatelessComponent {
@@ -9,43 +10,12 @@ class Home extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    final quizzes = [
-      Quiz(
-        title: 'Quiz 1',
-        questions: [
-          Question(
-            question: 'Question 1',
-            answers: [
-              Answer(text: 'Answer 1', correct: true),
-              Answer(text: 'Answer 2', correct: true),
-              Answer(text: 'Answer 3', correct: true),
-              Answer(text: 'Answer 4', correct: true),
-            ],
-          ),
-        ],
-      ),
-      Quiz(
-        title: 'Quiz 2',
-        questions: [
-          Question(
-            question: 'Question 1',
-            answers: [
-              Answer(text: 'Answer 1', correct: true),
-              Answer(text: 'Answer 2', correct: true),
-              Answer(text: 'Answer 3', correct: true),
-              Answer(text: 'Answer 4', correct: true),
-            ],
-          ),
-        ],
-      ),
-    ];
-
     return div([
       h1(classes: 'page-header', [text('Pub Quiz Admin')]),
       div([
         button(
           onClick: () {
-            Router.of(context).push('/editor');
+            Router.of(context).push('/edit');
           },
           classes: 'add-quiz-button',
           [
@@ -54,7 +24,7 @@ class Home extends StatelessComponent {
           ],
         ),
       ]),
-      QuizList(quizzes: quizzes),
+      QuizList(quizzes: quizzes.values.toList()),
     ]);
   }
 }

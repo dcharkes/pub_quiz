@@ -1,0 +1,8 @@
+### A quiz.
+class: Quiz
+
+fields:
+  ### The title of the quiz.
+  title: String
+  ### The questions in this quiz.
+  questions: List<Question>

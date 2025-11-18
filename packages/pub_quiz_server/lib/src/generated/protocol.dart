@@ -11,8 +11,14 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
-import 'greeting.dart' as _i3;
+import 'answer.dart' as _i3;
+import 'greeting.dart' as _i4;
+import 'question.dart' as _i5;
+import 'quiz.dart' as _i6;
+export 'answer.dart';
 export 'greeting.dart';
+export 'question.dart';
+export 'quiz.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -31,11 +37,37 @@ class Protocol extends _i1.SerializationManagerServer {
     Type? t,
   ]) {
     t ??= T;
-    if (t == _i3.Greeting) {
-      return _i3.Greeting.fromJson(data) as T;
+    if (t == _i3.Answer) {
+      return _i3.Answer.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i3.Greeting?>()) {
-      return (data != null ? _i3.Greeting.fromJson(data) : null) as T;
+    if (t == _i4.Greeting) {
+      return _i4.Greeting.fromJson(data) as T;
+    }
+    if (t == _i5.Question) {
+      return _i5.Question.fromJson(data) as T;
+    }
+    if (t == _i6.Quiz) {
+      return _i6.Quiz.fromJson(data) as T;
+    }
+    if (t == _i1.getType<_i3.Answer?>()) {
+      return (data != null ? _i3.Answer.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i4.Greeting?>()) {
+      return (data != null ? _i4.Greeting.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i5.Question?>()) {
+      return (data != null ? _i5.Question.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i6.Quiz?>()) {
+      return (data != null ? _i6.Quiz.fromJson(data) : null) as T;
+    }
+    if (t == List<_i3.Answer>) {
+      return (data as List).map((e) => deserialize<_i3.Answer>(e)).toList()
+          as T;
+    }
+    if (t == List<_i5.Question>) {
+      return (data as List).map((e) => deserialize<_i5.Question>(e)).toList()
+          as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -47,8 +79,17 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i3.Greeting) {
+    if (data is _i3.Answer) {
+      return 'Answer';
+    }
+    if (data is _i4.Greeting) {
       return 'Greeting';
+    }
+    if (data is _i5.Question) {
+      return 'Question';
+    }
+    if (data is _i6.Quiz) {
+      return 'Quiz';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -63,8 +104,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'Answer') {
+      return deserialize<_i3.Answer>(data['data']);
+    }
     if (dataClassName == 'Greeting') {
-      return deserialize<_i3.Greeting>(data['data']);
+      return deserialize<_i4.Greeting>(data['data']);
+    }
+    if (dataClassName == 'Question') {
+      return deserialize<_i5.Question>(data['data']);
+    }
+    if (dataClassName == 'Quiz') {
+      return deserialize<_i6.Quiz>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);

@@ -1,0 +1,8 @@
+### An answer to a question.
+class: Answer
+
+fields:
+  ### The text representation of this answer.
+  text: String
+  ### Whether this answer is correct.
+  correct: bool

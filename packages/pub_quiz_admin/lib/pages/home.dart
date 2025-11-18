@@ -1,8 +1,8 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
+import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 import '../components/quiz_list.dart';
-import '../data/quiz.dart';
 
 class Home extends StatelessComponent {
   const Home({super.key});
@@ -15,7 +15,12 @@ class Home extends StatelessComponent {
         questions: [
           Question(
             question: 'Question 1',
-            answers: ['Answer 1', 'Answer 2', 'Answer 3', 'Answer 4'],
+            answers: [
+              Answer(text: 'Answer 1', correct: true),
+              Answer(text: 'Answer 2', correct: true),
+              Answer(text: 'Answer 3', correct: true),
+              Answer(text: 'Answer 4', correct: true),
+            ],
           ),
         ],
       ),
@@ -24,7 +29,12 @@ class Home extends StatelessComponent {
         questions: [
           Question(
             question: 'Question 1',
-            answers: ['Answer 1', 'Answer 2', 'Answer 3', 'Answer 4'],
+            answers: [
+              Answer(text: 'Answer 1', correct: true),
+              Answer(text: 'Answer 2', correct: true),
+              Answer(text: 'Answer 3', correct: true),
+              Answer(text: 'Answer 4', correct: true),
+            ],
           ),
         ],
       ),

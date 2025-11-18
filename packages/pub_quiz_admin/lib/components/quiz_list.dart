@@ -1,6 +1,6 @@
 import 'package:jaspr/jaspr.dart';
 
-import '../data/quiz.dart';
+import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 class QuizList extends StatelessComponent {
   const QuizList({super.key, required this.quizzes});

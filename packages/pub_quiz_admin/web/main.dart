@@ -9,5 +9,5 @@ import 'package:pub_quiz_admin/app.dart';
 
 void main() {
   // Attaches the [App] component to the <body> of the page.
-  runApp(App());
+  runApp(const App());
 }

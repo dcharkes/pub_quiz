@@ -1,17 +1,16 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
-
 class Header extends StatelessComponent {
   const Header({super.key});
 
   @override
   Component build(BuildContext context) {
-    var activePath = RouteState.of(context).location;
+    final activePath = RouteState.of(context).location;
 
     return header([
       nav([
-        for (var route in [
+        for (final route in [
           (label: 'Home', path: '/'),
           (label: 'About', path: '/about'),
         ])

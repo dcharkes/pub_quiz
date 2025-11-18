@@ -1,6 +1,5 @@
 import 'package:jaspr/jaspr.dart';
 
-
 class Counter extends StatefulComponent {
   const Counter({super.key});
 

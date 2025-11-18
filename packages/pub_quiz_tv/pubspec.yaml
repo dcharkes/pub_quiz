@@ -1,0 +1,23 @@
+name: pub_quiz_tv
+description: The TV display for the Pub Quiz, built with Flutter.
+publish_to: none
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+  flutter: '>=3.10.0'
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  serverpod_flutter: ^2.0.0
+
+  pub_quiz_shared:
+    path: ../pub_quiz_shared
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

@@ -1,0 +1,12 @@
+name: pub_quiz
+description: A pub quiz game.
+version: 1.0.0
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+
+workspace:
+  - packages/pub_quiz_admin
+  - packages/pub_quiz_tv
+  - packages/pub_quiz_player
+  - packages/pub_quiz_server

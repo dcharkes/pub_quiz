@@ -1,0 +1,20 @@
+name: pub_quiz_admin
+description: The admin panel for the Pub Quiz, built with Jaspr.
+publish_to: none
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+
+resolution: workspace
+
+dependencies:
+  jaspr: ^0.21.7
+  jaspr_router: ^0.8.0
+  pub_quiz_shared:
+    path: ../pub_quiz_shared
+
+dev_dependencies:
+  jaspr_builder: ^0.21.7
+  build_runner: ^2.10.3
+  lints: ^6.0.0
+  test: ^1.26.0

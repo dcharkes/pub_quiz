@@ -10,17 +10,22 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'question.dart' as _i2;
 
 /// An answer to a question.
 abstract class Answer implements _i1.SerializableModel {
   Answer._({
     this.id,
+    required this.questionId,
+    this.question,
     required this.text,
     required this.correct,
   });
 
   factory Answer({
     int? id,
+    required int questionId,
+    _i2.Question? question,
     required String text,
     required bool correct,
   }) = _AnswerImpl;
@@ -28,6 +33,11 @@ abstract class Answer implements _i1.SerializableModel {
   factory Answer.fromJson(Map<String, dynamic> jsonSerialization) {
     return Answer(
       id: jsonSerialization['id'] as int?,
+      questionId: jsonSerialization['questionId'] as int,
+      question: jsonSerialization['question'] == null
+          ? null
+          : _i2.Question.fromJson(
+              (jsonSerialization['question'] as Map<String, dynamic>)),
       text: jsonSerialization['text'] as String,
       correct: jsonSerialization['correct'] as bool,
     );
@@ -37,6 +47,10 @@ abstract class Answer implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  int questionId;
+
+  _i2.Question? question;
 
   /// The text representation of this answer.
   String text;
@@ -49,6 +63,8 @@ abstract class Answer implements _i1.SerializableModel {
   @_i1.useResult
   Answer copyWith({
     int? id,
+    int? questionId,
+    _i2.Question? question,
     String? text,
     bool? correct,
   });
@@ -56,6 +72,8 @@ abstract class Answer implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'questionId': questionId,
+      if (question != null) 'question': question?.toJson(),
       'text': text,
       'correct': correct,
     };
@@ -72,10 +90,14 @@ class _Undefined {}
 class _AnswerImpl extends Answer {
   _AnswerImpl({
     int? id,
+    required int questionId,
+    _i2.Question? question,
     required String text,
     required bool correct,
   }) : super._(
           id: id,
+          questionId: questionId,
+          question: question,
           text: text,
           correct: correct,
         );
@@ -86,11 +108,16 @@ class _AnswerImpl extends Answer {
   @override
   Answer copyWith({
     Object? id = _Undefined,
+    int? questionId,
+    Object? question = _Undefined,
     String? text,
     bool? correct,
   }) {
     return Answer(
       id: id is int? ? id : this.id,
+      questionId: questionId ?? this.questionId,
+      question:
+          question is _i2.Question? ? question : this.question?.copyWith(),
       text: text ?? this.text,
       correct: correct ?? this.correct,
     );

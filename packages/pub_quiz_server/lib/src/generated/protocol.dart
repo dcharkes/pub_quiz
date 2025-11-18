@@ -42,6 +42,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'answer_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
+          name: 'questionId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
           name: 'text',
           columnType: _i2.ColumnType.text,
           isNullable: false,
@@ -54,7 +60,18 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'bool',
         ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'answer_fk_0',
+          columns: ['questionId'],
+          referenceTable: 'question',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'answer_pkey',
@@ -86,19 +103,30 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'question_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
+          name: 'quizId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
           name: 'question',
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
-          name: 'answers',
-          columnType: _i2.ColumnType.json,
-          isNullable: false,
-          dartType: 'List<protocol:Answer>',
-        ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'question_fk_0',
+          columns: ['quizId'],
+          referenceTable: 'quiz',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'question_pkey',
@@ -134,12 +162,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'questions',
-          columnType: _i2.ColumnType.json,
-          isNullable: false,
-          dartType: 'List<protocol:Question>',
         ),
       ],
       foreignKeys: [],
@@ -193,13 +215,15 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i6.Quiz?>()) {
       return (data != null ? _i6.Quiz.fromJson(data) : null) as T;
     }
-    if (t == List<_i3.Answer>) {
-      return (data as List).map((e) => deserialize<_i3.Answer>(e)).toList()
-          as T;
+    if (t == _i1.getType<List<_i3.Answer>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i3.Answer>(e)).toList()
+          : null) as T;
     }
-    if (t == List<_i5.Question>) {
-      return (data as List).map((e) => deserialize<_i5.Question>(e)).toList()
-          as T;
+    if (t == _i1.getType<List<_i5.Question>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i5.Question>(e)).toList()
+          : null) as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);

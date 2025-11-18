@@ -8,19 +8,26 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'question.dart' as _i2;
 
 /// An answer to a question.
 abstract class Answer implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Answer._({
     this.id,
+    required this.questionId,
+    this.question,
     required this.text,
     required this.correct,
   });
 
   factory Answer({
     int? id,
+    required int questionId,
+    _i2.Question? question,
     required String text,
     required bool correct,
   }) = _AnswerImpl;
@@ -28,6 +35,11 @@ abstract class Answer implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   factory Answer.fromJson(Map<String, dynamic> jsonSerialization) {
     return Answer(
       id: jsonSerialization['id'] as int?,
+      questionId: jsonSerialization['questionId'] as int,
+      question: jsonSerialization['question'] == null
+          ? null
+          : _i2.Question.fromJson(
+              (jsonSerialization['question'] as Map<String, dynamic>)),
       text: jsonSerialization['text'] as String,
       correct: jsonSerialization['correct'] as bool,
     );
@@ -39,6 +51,10 @@ abstract class Answer implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   @override
   int? id;
+
+  int questionId;
+
+  _i2.Question? question;
 
   /// The text representation of this answer.
   String text;
@@ -54,6 +70,8 @@ abstract class Answer implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @_i1.useResult
   Answer copyWith({
     int? id,
+    int? questionId,
+    _i2.Question? question,
     String? text,
     bool? correct,
   });
@@ -61,6 +79,8 @@ abstract class Answer implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'questionId': questionId,
+      if (question != null) 'question': question?.toJson(),
       'text': text,
       'correct': correct,
     };
@@ -70,13 +90,15 @@ abstract class Answer implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
+      'questionId': questionId,
+      if (question != null) 'question': question?.toJsonForProtocol(),
       'text': text,
       'correct': correct,
     };
   }
 
-  static AnswerInclude include() {
-    return AnswerInclude._();
+  static AnswerInclude include({_i2.QuestionInclude? question}) {
+    return AnswerInclude._(question: question);
   }
 
   static AnswerIncludeList includeList({
@@ -110,10 +132,14 @@ class _Undefined {}
 class _AnswerImpl extends Answer {
   _AnswerImpl({
     int? id,
+    required int questionId,
+    _i2.Question? question,
     required String text,
     required bool correct,
   }) : super._(
           id: id,
+          questionId: questionId,
+          question: question,
           text: text,
           correct: correct,
         );
@@ -124,11 +150,16 @@ class _AnswerImpl extends Answer {
   @override
   Answer copyWith({
     Object? id = _Undefined,
+    int? questionId,
+    Object? question = _Undefined,
     String? text,
     bool? correct,
   }) {
     return Answer(
       id: id is int? ? id : this.id,
+      questionId: questionId ?? this.questionId,
+      question:
+          question is _i2.Question? ? question : this.question?.copyWith(),
       text: text ?? this.text,
       correct: correct ?? this.correct,
     );
@@ -137,6 +168,10 @@ class _AnswerImpl extends Answer {
 
 class AnswerTable extends _i1.Table<int?> {
   AnswerTable({super.tableRelation}) : super(tableName: 'answer') {
+    questionId = _i1.ColumnInt(
+      'questionId',
+      this,
+    );
     text = _i1.ColumnString(
       'text',
       this,
@@ -147,25 +182,55 @@ class AnswerTable extends _i1.Table<int?> {
     );
   }
 
+  late final _i1.ColumnInt questionId;
+
+  _i2.QuestionTable? _question;
+
   /// The text representation of this answer.
   late final _i1.ColumnString text;
 
   /// Whether this answer is correct.
   late final _i1.ColumnBool correct;
 
+  _i2.QuestionTable get question {
+    if (_question != null) return _question!;
+    _question = _i1.createRelationTable(
+      relationFieldName: 'question',
+      field: Answer.t.questionId,
+      foreignField: _i2.Question.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.QuestionTable(tableRelation: foreignTableRelation),
+    );
+    return _question!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
+        questionId,
         text,
         correct,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'question') {
+      return question;
+    }
+    return null;
+  }
 }
 
 class AnswerInclude extends _i1.IncludeObject {
-  AnswerInclude._();
+  AnswerInclude._({_i2.QuestionInclude? question}) {
+    _question = question;
+  }
+
+  _i2.QuestionInclude? _question;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'question': _question};
 
   @override
   _i1.Table<int?> get table => Answer.t;
@@ -193,6 +258,8 @@ class AnswerIncludeList extends _i1.IncludeList {
 
 class AnswerRepository {
   const AnswerRepository._();
+
+  final attachRow = const AnswerAttachRowRepository._();
 
   /// Returns a list of [Answer]s matching the given query parameters.
   ///
@@ -225,6 +292,7 @@ class AnswerRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<AnswerTable>? orderByList,
     _i1.Transaction? transaction,
+    AnswerInclude? include,
   }) async {
     return session.db.find<Answer>(
       where: where?.call(Answer.t),
@@ -234,6 +302,7 @@ class AnswerRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -262,6 +331,7 @@ class AnswerRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<AnswerTable>? orderByList,
     _i1.Transaction? transaction,
+    AnswerInclude? include,
   }) async {
     return session.db.findFirstRow<Answer>(
       where: where?.call(Answer.t),
@@ -270,6 +340,7 @@ class AnswerRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -278,10 +349,12 @@ class AnswerRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    AnswerInclude? include,
   }) async {
     return session.db.findById<Answer>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -399,6 +472,33 @@ class AnswerRepository {
     return session.db.count<Answer>(
       where: where?.call(Answer.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class AnswerAttachRowRepository {
+  const AnswerAttachRowRepository._();
+
+  /// Creates a relation between the given [Answer] and [Question]
+  /// by setting the [Answer]'s foreign key `questionId` to refer to the [Question].
+  Future<void> question(
+    _i1.Session session,
+    Answer answer,
+    _i2.Question question, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (answer.id == null) {
+      throw ArgumentError.notNull('answer.id');
+    }
+    if (question.id == null) {
+      throw ArgumentError.notNull('question.id');
+    }
+
+    var $answer = answer.copyWith(questionId: question.id);
+    await session.db.updateRow<Answer>(
+      $answer,
+      columns: [Answer.t.questionId],
       transaction: transaction,
     );
   }

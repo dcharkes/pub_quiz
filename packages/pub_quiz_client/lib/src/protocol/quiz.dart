@@ -17,21 +17,21 @@ abstract class Quiz implements _i1.SerializableModel {
   Quiz._({
     this.id,
     required this.title,
-    required this.questions,
+    this.questions,
   });
 
   factory Quiz({
     int? id,
     required String title,
-    required List<_i2.Question> questions,
+    List<_i2.Question>? questions,
   }) = _QuizImpl;
 
   factory Quiz.fromJson(Map<String, dynamic> jsonSerialization) {
     return Quiz(
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
-      questions: (jsonSerialization['questions'] as List)
-          .map((e) => _i2.Question.fromJson((e as Map<String, dynamic>)))
+      questions: (jsonSerialization['questions'] as List?)
+          ?.map((e) => _i2.Question.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -45,7 +45,7 @@ abstract class Quiz implements _i1.SerializableModel {
   String title;
 
   /// The questions in this quiz.
-  List<_i2.Question> questions;
+  List<_i2.Question>? questions;
 
   /// Returns a shallow copy of this [Quiz]
   /// with some or all fields replaced by the given arguments.
@@ -60,7 +60,8 @@ abstract class Quiz implements _i1.SerializableModel {
     return {
       if (id != null) 'id': id,
       'title': title,
-      'questions': questions.toJson(valueToJson: (v) => v.toJson()),
+      if (questions != null)
+        'questions': questions?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -76,7 +77,7 @@ class _QuizImpl extends Quiz {
   _QuizImpl({
     int? id,
     required String title,
-    required List<_i2.Question> questions,
+    List<_i2.Question>? questions,
   }) : super._(
           id: id,
           title: title,
@@ -90,13 +91,14 @@ class _QuizImpl extends Quiz {
   Quiz copyWith({
     Object? id = _Undefined,
     String? title,
-    List<_i2.Question>? questions,
+    Object? questions = _Undefined,
   }) {
     return Quiz(
       id: id is int? ? id : this.id,
       title: title ?? this.title,
-      questions:
-          questions ?? this.questions.map((e0) => e0.copyWith()).toList(),
+      questions: questions is List<_i2.Question>?
+          ? questions
+          : this.questions?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

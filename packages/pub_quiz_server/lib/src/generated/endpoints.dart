@@ -12,6 +12,8 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../greeting_endpoint.dart' as _i2;
 import '../quiz_endpoint.dart' as _i3;
+import 'package:pub_quiz_server/src/generated/quiz.dart' as _i4;
+import 'package:pub_quiz_server/src/generated/question.dart' as _i5;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -57,7 +59,62 @@ class Endpoints extends _i1.EndpointDispatch {
     connectors['quiz'] = _i1.EndpointConnector(
       name: 'quiz',
       endpoint: endpoints['quiz']!,
-      methodConnectors: {},
+      methodConnectors: {
+        'createQuiz': _i1.MethodConnector(
+          name: 'createQuiz',
+          params: {
+            'quiz': _i1.ParameterDescription(
+              name: 'quiz',
+              type: _i1.getType<_i4.Quiz>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['quiz'] as _i3.QuizEndpoint).createQuiz(
+            session,
+            params['quiz'],
+          ),
+        ),
+        'createQuestion': _i1.MethodConnector(
+          name: 'createQuestion',
+          params: {
+            'question': _i1.ParameterDescription(
+              name: 'question',
+              type: _i1.getType<_i5.Question>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['quiz'] as _i3.QuizEndpoint).createQuestion(
+            session,
+            params['question'],
+          ),
+        ),
+        'loadQuiz': _i1.MethodConnector(
+          name: 'loadQuiz',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['quiz'] as _i3.QuizEndpoint).loadQuiz(
+            session,
+            params['id'],
+          ),
+        ),
+      },
     );
   }
 }

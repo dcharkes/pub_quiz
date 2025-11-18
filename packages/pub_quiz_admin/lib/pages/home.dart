@@ -1,4 +1,5 @@
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_router/jaspr_router.dart';
 
 import '../components/quiz_list.dart';
 import '../data/quiz.dart';
@@ -30,17 +31,17 @@ class Home extends StatelessComponent {
     ];
 
     return div([
-      h1([text('Pub Quiz Admin')], classes: 'page-header'),
+      h1(classes: 'page-header', [text('Pub Quiz Admin')]),
       div([
         button(
           onClick: () {
-            // Handle add new quiz button press
+            Router.of(context).push('/editor');
           },
+          classes: 'add-quiz-button',
           [
             i(classes: 'material-icons md-18', [text('add')]),
             text('Add New Quiz'),
           ],
-          classes: 'add-quiz-button',
         ),
       ]),
       QuizList(quizzes: quizzes),

@@ -6,7 +6,8 @@ class Quiz {
 }
 
 class Question {
-  const Question({required this.question, required this.answers}) : assert(answers.length == 4);
+  const Question({required this.question, required this.answers})
+    : assert(answers.length == 4);
 
   final String question;
   final List<String> answers;

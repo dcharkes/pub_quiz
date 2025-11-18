@@ -1,21 +1,12 @@
 name: pub_quiz_shared
-description: 'A new Flutter project.'
+description: 'Shared logic for the Pub Quiz app.'
 publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: '>=3.9.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
 
 resolution: workspace
 
-dependencies:
-  flutter:
-    sdk: flutter
-
 dev_dependencies:
   dart_flutter_team_lints: ^3.5.2
-  flutter_test:
-    sdk: flutter
-
-flutter:
-  uses-material-design: true

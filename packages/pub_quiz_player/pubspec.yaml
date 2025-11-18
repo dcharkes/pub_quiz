@@ -3,7 +3,7 @@ description: The Flutter app for players of the Pub Quiz.
 publish_to: none
 
 environment:
-  sdk: '>=3.9.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
   flutter: '>=3.10.0'
 
 resolution: workspace
@@ -19,3 +19,6 @@ dev_dependencies:
   dart_flutter_team_lints: ^3.5.2
   flutter_test:
     sdk: flutter
+
+flutter:
+  uses-material-design: true

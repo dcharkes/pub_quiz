@@ -53,7 +53,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDWo3-45wk-iuZTR7hP9p0vjQowAh-6U10',
+    apiKey: '',
     appId: '1:570652629246:web:8b8dd883215df2e77fadaf',
     messagingSenderId: '570652629246',
     projectId: 'dashpubquiz',

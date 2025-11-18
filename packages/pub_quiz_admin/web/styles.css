@@ -209,3 +209,91 @@ ol {
 .quiz-list-item button .material-icons {
   margin-right: 5px;
 }
+
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input[type=text] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.question-list {
+  margin-top: 2rem;
+}
+
+.question-editor {
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  background-color: #f9f9f9;
+}
+
+.answers-container {
+  margin-top: 1.5rem;
+}
+
+.answers-container h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.answer-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.answer-item input[type=text] {
+  flex-grow: 1;
+  margin-right: 1rem;
+}
+
+.answer-actions {
+  display: flex;
+  align-items: center;
+}
+
+.answer-actions label {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.answer-actions input[type=checkbox] {
+  margin-right: 0.5rem;
+}
+
+.delete-answer-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+}
+
+.delete-answer-button:hover {
+  color: #dc3545;
+}
+
+.add-question-button .material-icons {
+  margin-right: 8px;
+}
+
+

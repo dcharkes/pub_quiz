@@ -17,21 +17,33 @@ class _CounterState extends State<QuizEditor> {
 
   @override
   Component build(BuildContext context) {
-    return div([
+    return section([
       h1(classes: 'page-header', [text('Quiz Editor')]),
-      input(
-        type: InputType.text,
-        value: title,
-        attributes: {
-          'placeholder': 'Quiz Title',
-        },
-        onInput: (value) {
-          setState(() {
-            title = value as String;
-          });
-        },
+      div(
+        classes: 'form-group',
+        [
+          label(htmlFor: 'quiz-title', [text('Quiz Title')]),
+          input(
+            id: 'quiz-title',
+            type: InputType.text,
+            value: title,
+            attributes: {
+              'placeholder': 'Enter quiz title',
+            },
+            onInput: (value) {
+              setState(() {
+                title = value as String;
+              });
+            },
+          ),
+        ],
       ),
-      for (final question in questions) QuestionEditor(question: question),
+      div(
+        classes: 'question-list',
+        [
+          for (final question in questions) QuestionEditor(question: question),
+        ],
+      ),
       button(
         onClick: () {
           setState(() {

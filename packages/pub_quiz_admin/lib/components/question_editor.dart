@@ -34,52 +34,78 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
   @override
   Component build(BuildContext context) {
     return div(
-      classes: 'quiz-editor',
+      classes: 'question-editor',
       [
         div(
-          classes: 'field-group',
+          classes: 'form-group',
           [
-            label(htmlFor: 'question-title', [text('Question Title')]),
+            label(htmlFor: 'question-title', [text('Question')]),
             input(
               id: 'question-title',
               type: InputType.text,
               value: component.question.question,
+              attributes: {
+                'placeholder': 'Enter your question',
+              },
               onInput: (value) {
                 _onTitleChange(value as String);
               },
             ),
           ],
         ),
+        div(
+          classes: 'answers-container',
+          [
+            h3([text('Answers')]),
+            ...component.question.answers.asMap().entries.map((entry) {
+              final index = entry.key;
+              final answer = entry.value;
 
-        h3([text('Answers')]),
-        ...component.question.answers.asMap().entries.map((entry) {
-          final index = entry.key;
-          final answer = entry.value;
-
-          return div(
-            classes: 'answer-field',
-            [
-              input(
-                type: InputType.text,
-                value: answer.text,
-                onInput: (value) {
-                  _onAnswerTextChange(index, value as String);
-                },
-              ),
-
-              label([
-                input(
-                  type: InputType.checkbox,
-                  checked: answer.correct,
-                  onInput: (value) {
-                    _onAnswerCorrectChange(index, value as bool);
-                  },
-                ),
-                text(' Correct'),
-              ]),
-            ],
-          );
-        }),
+              return div(
+                classes: 'answer-item',
+                [
+                  input(
+                    type: InputType.text,
+                    value: answer.text,
+                    attributes: {
+                      'placeholder': 'Answer ${index + 1}',
+                    },
+                    onInput: (value) {
+                      _onAnswerTextChange(index, value as String);
+                    },
+                  ),
+                  div(
+                    classes: 'answer-actions',
+                    [
+                      label([
+                        input(
+                          type: InputType.checkbox,
+                          checked: answer.correct,
+                          onInput: (value) {
+                            _onAnswerCorrectChange(index, value as bool);
+                          },
+                        ),
+                        text('Correct'),
+                      ]),
+                      button(
+                        classes: 'delete-answer-button',
+                        onClick: () {
+                          // TODO(goderbauer): Handle delete answer button press.
+                        },
+                        [
+                          i(
+                            classes: 'material-icons md-18',
+                            [text('delete')],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            }),
+          ],
+        ),
       ],
     );
   }

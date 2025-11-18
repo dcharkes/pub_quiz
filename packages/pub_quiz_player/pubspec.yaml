@@ -9,6 +9,8 @@ environment:
 resolution: workspace
 
 dependencies:
+  cloud_firestore: ^6.1.0
+  firebase_core: ^4.2.1
   flutter:
     sdk: flutter
   pub_quiz_shared:

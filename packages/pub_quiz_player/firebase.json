@@ -1,16 +1,25 @@
 {
+  "flutter": {
+    "platforms": {
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "dashpubquiz",
+          "configurations": {
+            "web": "1:570652629246:web:8b8dd883215df2e77fadaf"
+          }
+        }
+      }
+    }
+  },
   "hosting": {
-    "public": "build/web",
+    "source": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
+    "frameworksBackend": {
+      "region": "europe-west1"
+    }
   }
 }

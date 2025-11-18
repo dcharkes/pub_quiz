@@ -119,3 +119,93 @@ header nav div.active::before {
 ol {
   max-width: 500px;
 }
+
+.page-header {
+  font-size: 3rem;
+  text-align: center;
+  padding: 1rem;
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+  margin-bottom: 2rem;
+}
+
+.quiz-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 800px;
+  width: 90%;
+}
+
+.quiz-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.quiz-list-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-list-item span {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.quiz-list-item button {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quiz-list-item button:hover {
+  background-color: #014a81;
+}
+
+.add-quiz-button {
+  display: block;
+  margin: 0 auto 2rem;
+  padding: 0.8rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-quiz-button:hover {
+  background-color: #014a81;
+}
+
+.material-icons {
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.md-18 {
+  font-size: 18px;
+}
+
+.add-quiz-button .material-icons {
+  margin-right: 8px;
+}
+
+.quiz-list-item button .material-icons {
+  margin-right: 5px;
+}

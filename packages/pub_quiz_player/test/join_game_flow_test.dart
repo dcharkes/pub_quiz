@@ -29,11 +29,15 @@ void main() {
     // 4. Enter Game ID and Submit
     await tester.enterText(find.byType(TextField), 'test-game');
     await tester.tap(find.text('Next'));
+    
+    // Wait for navigation and async client connection
     await tester.pumpAndSettle();
 
     // 5. Verify we are on JoinGameScreen
     expect(find.text('Join Game: test-game'), findsOneWidget);
     expect(find.text('Your Name'), findsOneWidget);
+    // Verify Quiz Title from FakeClient
+    expect(find.text('Dart & Flutter Fundamentals'), findsOneWidget);
 
     // 6. Enter Name and Join
     await tester.enterText(find.byType(TextField), 'Player1');

@@ -13,7 +13,11 @@ abstract interface class PlayerClient {
   QuizDescription get quizDescription;
   Stream<PlayerQuestion> get questionsStream;
 
-  void recordAnswer(int questionId, int answerId);
+  Future<void> recordAnswer(int questionId, int answerId);
+
+  Future<void> join(String name);
+
+  void dispose();
 }
 
 class PlayerQuestion {
@@ -74,7 +78,16 @@ class FakeClient implements PlayerClient {
   }
 
   @override
-  void recordAnswer(int questionId, int answerId) {}
+  Future<void> recordAnswer(int questionId, int answerId) async {}
+
+  @override
+  Future<void> join(String name) async {}
+
+  @override
+  void dispose() {
+    _clicksSubscription.cancel();
+    _questionController.close();
+  }
 }
 
 final fakeQuiz = Quiz(

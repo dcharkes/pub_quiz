@@ -26,25 +26,27 @@ class _EnterGameIdScreenState extends State<EnterGameIdScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const PubQuizLogo(),
-              const SizedBox(height: 32),
-              TextField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  labelText: 'Game ID',
-                  border: OutlineInputBorder(),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const PubQuizLogo(),
+                const SizedBox(height: 32),
+                TextField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    labelText: 'Game ID',
+                    border: OutlineInputBorder(),
+                  ),
+                  onSubmitted: (_) => _submit(),
                 ),
-                onSubmitted: (_) => _submit(),
-              ),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: _submit,
-                child: const Text('Next'),
-              ),
-            ],
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: _submit,
+                  child: const Text('Next'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

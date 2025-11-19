@@ -7,4 +7,4 @@ fields:
   ### The title of the quiz.
   title: String
   ### The questions in this quiz.
-  questions: List<Question>?, relation(name=quiz_questions)
+  questions: List<Question>

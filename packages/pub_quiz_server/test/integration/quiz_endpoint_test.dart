@@ -15,23 +15,17 @@ void main() {
     test(
       'CRUDding along',
       () async {
-        var quiz = Quiz(title: 'Quiz');
+        var quiz = Quiz(
+          title: 'Quiz',
+          questions: [Question(question: 'Question', answers: [])],
+        );
+
         expect(quiz.id, isNull);
         quiz = await endpoints.quiz.createQuiz(sessionBuilder, quiz);
         expect(quiz.id, isNotNull);
 
-        var question = Question(quizId: quiz.id!, question: 'Question');
-        question = await endpoints.quiz.createQuestion(
-          sessionBuilder,
-          question,
-        );
-        expect(question.id, isNotNull);
-
-        // relations not loaded.
-        expect(quiz.questions, isNull);
-
-        // Load quiz with questions.
-        final quiz2 = (await endpoints.quiz.loadQuiz(
+        // Read quiz with questions.
+        final quiz2 = (await endpoints.quiz.readQuiz(
           sessionBuilder,
           quiz.id!,
         ))!;

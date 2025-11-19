@@ -49,15 +49,13 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i4.Quiz?>()) {
       return (data != null ? _i4.Quiz.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<_i2.Answer>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i2.Answer>(e)).toList()
-          : null) as T;
+    if (t == List<_i2.Answer>) {
+      return (data as List).map((e) => deserialize<_i2.Answer>(e)).toList()
+          as T;
     }
-    if (t == _i1.getType<List<_i3.Question>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i3.Question>(e)).toList()
-          : null) as T;
+    if (t == List<_i3.Question>) {
+      return (data as List).map((e) => deserialize<_i3.Question>(e)).toList()
+          as T;
     }
     return super.deserialize<T>(data, t);
   }

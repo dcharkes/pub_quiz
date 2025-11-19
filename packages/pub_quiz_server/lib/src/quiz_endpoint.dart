@@ -7,17 +7,18 @@ class QuizEndpoint extends Endpoint {
     return await Quiz.db.insertRow(session, quiz);
   }
 
-  Future<Question> createQuestion(Session session, Question question) async {
-    return await Question.db.insertRow(session, question);
-  }
-
-  Future<Quiz?> loadQuiz(Session session, int id) async {
+  Future<Quiz?> readQuiz(Session session, int id) async {
     return await Quiz.db.findById(
       session,
       id,
-      include: Quiz.include(
-        questions: Question.includeList(),
-      ),
     );
+  }
+
+  Future<Quiz> updateQuiz(Session session, Quiz quiz) async {
+    return await Quiz.db.updateRow(session, quiz);
+  }
+
+  Future<void> deleteQuiz(Session session, Quiz quiz) async {
+    await Quiz.db.deleteRow(session, quiz);
   }
 }

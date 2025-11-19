@@ -12,8 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i3;
-import 'package:pub_quiz_client/src/protocol/question.dart' as _i4;
-import 'protocol.dart' as _i5;
+import 'protocol.dart' as _i4;
 
 /// {@category Endpoint}
 class EndpointQuiz extends _i1.EndpointRef {
@@ -29,18 +28,24 @@ class EndpointQuiz extends _i1.EndpointRef {
         {'quiz': quiz},
       );
 
-  _i2.Future<_i4.Question> createQuestion(_i4.Question question) =>
-      caller.callServerEndpoint<_i4.Question>(
-        'quiz',
-        'createQuestion',
-        {'question': question},
-      );
-
-  _i2.Future<_i3.Quiz?> loadQuiz(int id) =>
+  _i2.Future<_i3.Quiz?> readQuiz(int id) =>
       caller.callServerEndpoint<_i3.Quiz?>(
         'quiz',
-        'loadQuiz',
+        'readQuiz',
         {'id': id},
+      );
+
+  _i2.Future<_i3.Quiz> updateQuiz(_i3.Quiz quiz) =>
+      caller.callServerEndpoint<_i3.Quiz>(
+        'quiz',
+        'updateQuiz',
+        {'quiz': quiz},
+      );
+
+  _i2.Future<void> deleteQuiz(_i3.Quiz quiz) => caller.callServerEndpoint<void>(
+        'quiz',
+        'deleteQuiz',
+        {'quiz': quiz},
       );
 }
 
@@ -60,7 +65,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i5.Protocol(),
+          _i4.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

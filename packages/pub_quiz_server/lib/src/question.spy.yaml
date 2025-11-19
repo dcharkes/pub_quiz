@@ -1,11 +1,8 @@
 ### A question in a quiz.
 class: Question
 
-table: question
-
 fields:
-  quiz: Quiz?, relation(name=quiz_questions)
   ### The question.
   question: String
   ### The answers to this question
-  answers: List<Answer>?, relation(name=question_answers)
+  answers: List<Answer>

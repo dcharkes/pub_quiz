@@ -12,7 +12,6 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../quiz_endpoint.dart' as _i2;
 import 'package:pub_quiz_server/src/generated/quiz.dart' as _i3;
-import 'package:pub_quiz_server/src/generated/question.dart' as _i4;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -47,26 +46,8 @@ class Endpoints extends _i1.EndpointDispatch {
             params['quiz'],
           ),
         ),
-        'createQuestion': _i1.MethodConnector(
-          name: 'createQuestion',
-          params: {
-            'question': _i1.ParameterDescription(
-              name: 'question',
-              type: _i1.getType<_i4.Question>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['quiz'] as _i2.QuizEndpoint).createQuestion(
-            session,
-            params['question'],
-          ),
-        ),
-        'loadQuiz': _i1.MethodConnector(
-          name: 'loadQuiz',
+        'readQuiz': _i1.MethodConnector(
+          name: 'readQuiz',
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
@@ -78,9 +59,45 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['quiz'] as _i2.QuizEndpoint).loadQuiz(
+              (endpoints['quiz'] as _i2.QuizEndpoint).readQuiz(
             session,
             params['id'],
+          ),
+        ),
+        'updateQuiz': _i1.MethodConnector(
+          name: 'updateQuiz',
+          params: {
+            'quiz': _i1.ParameterDescription(
+              name: 'quiz',
+              type: _i1.getType<_i3.Quiz>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['quiz'] as _i2.QuizEndpoint).updateQuiz(
+            session,
+            params['quiz'],
+          ),
+        ),
+        'deleteQuiz': _i1.MethodConnector(
+          name: 'deleteQuiz',
+          params: {
+            'quiz': _i1.ParameterDescription(
+              name: 'quiz',
+              type: _i1.getType<_i3.Quiz>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['quiz'] as _i2.QuizEndpoint).deleteQuiz(
+            session,
+            params['quiz'],
           ),
         ),
       },

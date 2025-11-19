@@ -1,10 +1,7 @@
 ### An answer to a question.
 class: Answer
 
-table: answer
-
 fields:
-  question: Question?, relation(name=question_answers)
   ### The text representation of this answer.
   text: String
   ### Whether this answer is correct.

@@ -8,8 +8,6 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
-// ignore_for_file: unnecessary_null_comparison
-
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'question.dart' as _i2;
@@ -19,21 +17,21 @@ abstract class Quiz implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Quiz._({
     this.id,
     required this.title,
-    this.questions,
+    required this.questions,
   });
 
   factory Quiz({
     int? id,
     required String title,
-    List<_i2.Question>? questions,
+    required List<_i2.Question> questions,
   }) = _QuizImpl;
 
   factory Quiz.fromJson(Map<String, dynamic> jsonSerialization) {
     return Quiz(
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
-      questions: (jsonSerialization['questions'] as List?)
-          ?.map((e) => _i2.Question.fromJson((e as Map<String, dynamic>)))
+      questions: (jsonSerialization['questions'] as List)
+          .map((e) => _i2.Question.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -49,7 +47,7 @@ abstract class Quiz implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   String title;
 
   /// The questions in this quiz.
-  List<_i2.Question>? questions;
+  List<_i2.Question> questions;
 
   @override
   _i1.Table<int?> get table => t;
@@ -67,8 +65,7 @@ abstract class Quiz implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     return {
       if (id != null) 'id': id,
       'title': title,
-      if (questions != null)
-        'questions': questions?.toJson(valueToJson: (v) => v.toJson()),
+      'questions': questions.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -77,14 +74,12 @@ abstract class Quiz implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     return {
       if (id != null) 'id': id,
       'title': title,
-      if (questions != null)
-        'questions':
-            questions?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      'questions': questions.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static QuizInclude include({_i2.QuestionIncludeList? questions}) {
-    return QuizInclude._(questions: questions);
+  static QuizInclude include() {
+    return QuizInclude._();
   }
 
   static QuizIncludeList includeList({
@@ -119,7 +114,7 @@ class _QuizImpl extends Quiz {
   _QuizImpl({
     int? id,
     required String title,
-    List<_i2.Question>? questions,
+    required List<_i2.Question> questions,
   }) : super._(
           id: id,
           title: title,
@@ -133,14 +128,13 @@ class _QuizImpl extends Quiz {
   Quiz copyWith({
     Object? id = _Undefined,
     String? title,
-    Object? questions = _Undefined,
+    List<_i2.Question>? questions,
   }) {
     return Quiz(
       id: id is int? ? id : this.id,
       title: title ?? this.title,
-      questions: questions is List<_i2.Question>?
-          ? questions
-          : this.questions?.map((e0) => e0.copyWith()).toList(),
+      questions:
+          questions ?? this.questions.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -151,72 +145,31 @@ class QuizTable extends _i1.Table<int?> {
       'title',
       this,
     );
+    questions = _i1.ColumnSerializable(
+      'questions',
+      this,
+    );
   }
 
   /// The title of the quiz.
   late final _i1.ColumnString title;
 
   /// The questions in this quiz.
-  _i2.QuestionTable? ___questions;
-
-  /// The questions in this quiz.
-  _i1.ManyRelation<_i2.QuestionTable>? _questions;
-
-  _i2.QuestionTable get __questions {
-    if (___questions != null) return ___questions!;
-    ___questions = _i1.createRelationTable(
-      relationFieldName: '__questions',
-      field: Quiz.t.id,
-      foreignField: _i2.Question.t.quizId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i2.QuestionTable(tableRelation: foreignTableRelation),
-    );
-    return ___questions!;
-  }
-
-  _i1.ManyRelation<_i2.QuestionTable> get questions {
-    if (_questions != null) return _questions!;
-    var relationTable = _i1.createRelationTable(
-      relationFieldName: 'questions',
-      field: Quiz.t.id,
-      foreignField: _i2.Question.t.quizId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i2.QuestionTable(tableRelation: foreignTableRelation),
-    );
-    _questions = _i1.ManyRelation<_i2.QuestionTable>(
-      tableWithRelations: relationTable,
-      table: _i2.QuestionTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
-    return _questions!;
-  }
+  late final _i1.ColumnSerializable questions;
 
   @override
   List<_i1.Column> get columns => [
         id,
         title,
+        questions,
       ];
-
-  @override
-  _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'questions') {
-      return __questions;
-    }
-    return null;
-  }
 }
 
 class QuizInclude extends _i1.IncludeObject {
-  QuizInclude._({_i2.QuestionIncludeList? questions}) {
-    _questions = questions;
-  }
-
-  _i2.QuestionIncludeList? _questions;
+  QuizInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {'questions': _questions};
+  Map<String, _i1.Include?> get includes => {};
 
   @override
   _i1.Table<int?> get table => Quiz.t;
@@ -244,10 +197,6 @@ class QuizIncludeList extends _i1.IncludeList {
 
 class QuizRepository {
   const QuizRepository._();
-
-  final attach = const QuizAttachRepository._();
-
-  final attachRow = const QuizAttachRowRepository._();
 
   /// Returns a list of [Quiz]s matching the given query parameters.
   ///
@@ -280,7 +229,6 @@ class QuizRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<QuizTable>? orderByList,
     _i1.Transaction? transaction,
-    QuizInclude? include,
   }) async {
     return session.db.find<Quiz>(
       where: where?.call(Quiz.t),
@@ -290,7 +238,6 @@ class QuizRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -319,7 +266,6 @@ class QuizRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<QuizTable>? orderByList,
     _i1.Transaction? transaction,
-    QuizInclude? include,
   }) async {
     return session.db.findFirstRow<Quiz>(
       where: where?.call(Quiz.t),
@@ -328,7 +274,6 @@ class QuizRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -337,12 +282,10 @@ class QuizRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
-    QuizInclude? include,
   }) async {
     return session.db.findById<Quiz>(
       id,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -460,60 +403,6 @@ class QuizRepository {
     return session.db.count<Quiz>(
       where: where?.call(Quiz.t),
       limit: limit,
-      transaction: transaction,
-    );
-  }
-}
-
-class QuizAttachRepository {
-  const QuizAttachRepository._();
-
-  /// Creates a relation between this [Quiz] and the given [Question]s
-  /// by setting each [Question]'s foreign key `quizId` to refer to this [Quiz].
-  Future<void> questions(
-    _i1.Session session,
-    Quiz quiz,
-    List<_i2.Question> question, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (question.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('question.id');
-    }
-    if (quiz.id == null) {
-      throw ArgumentError.notNull('quiz.id');
-    }
-
-    var $question = question.map((e) => e.copyWith(quizId: quiz.id)).toList();
-    await session.db.update<_i2.Question>(
-      $question,
-      columns: [_i2.Question.t.quizId],
-      transaction: transaction,
-    );
-  }
-}
-
-class QuizAttachRowRepository {
-  const QuizAttachRowRepository._();
-
-  /// Creates a relation between this [Quiz] and the given [Question]
-  /// by setting the [Question]'s foreign key `quizId` to refer to this [Quiz].
-  Future<void> questions(
-    _i1.Session session,
-    Quiz quiz,
-    _i2.Question question, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (question.id == null) {
-      throw ArgumentError.notNull('question.id');
-    }
-    if (quiz.id == null) {
-      throw ArgumentError.notNull('quiz.id');
-    }
-
-    var $question = question.copyWith(quizId: quiz.id);
-    await session.db.updateRow<_i2.Question>(
-      $question,
-      columns: [_i2.Question.t.quizId],
       transaction: transaction,
     );
   }

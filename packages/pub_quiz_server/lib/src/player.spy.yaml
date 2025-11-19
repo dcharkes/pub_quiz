@@ -1,0 +1,11 @@
+### A player in a game
+class: Player
+
+table: player
+
+fields:
+  game: Game?, relation(name=game_players)
+  ### Player name, must not be unique.
+  name: String
+  ### Player score so far.
+  score: int

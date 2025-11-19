@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'question.dart' as _i2;
+import 'game.dart' as _i3;
 
 /// A quiz.
 abstract class Quiz implements _i1.SerializableModel {
@@ -18,12 +19,14 @@ abstract class Quiz implements _i1.SerializableModel {
     this.id,
     required this.title,
     required this.questions,
+    this.games,
   });
 
   factory Quiz({
     int? id,
     required String title,
     required List<_i2.Question> questions,
+    List<_i3.Game>? games,
   }) = _QuizImpl;
 
   factory Quiz.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -32,6 +35,9 @@ abstract class Quiz implements _i1.SerializableModel {
       title: jsonSerialization['title'] as String,
       questions: (jsonSerialization['questions'] as List)
           .map((e) => _i2.Question.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      games: (jsonSerialization['games'] as List?)
+          ?.map((e) => _i3.Game.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -47,6 +53,9 @@ abstract class Quiz implements _i1.SerializableModel {
   /// The questions in this quiz.
   List<_i2.Question> questions;
 
+  /// The games played with this quiz.
+  List<_i3.Game>? games;
+
   /// Returns a shallow copy of this [Quiz]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -54,6 +63,7 @@ abstract class Quiz implements _i1.SerializableModel {
     int? id,
     String? title,
     List<_i2.Question>? questions,
+    List<_i3.Game>? games,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -61,6 +71,7 @@ abstract class Quiz implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'title': title,
       'questions': questions.toJson(valueToJson: (v) => v.toJson()),
+      if (games != null) 'games': games?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -77,10 +88,12 @@ class _QuizImpl extends Quiz {
     int? id,
     required String title,
     required List<_i2.Question> questions,
+    List<_i3.Game>? games,
   }) : super._(
           id: id,
           title: title,
           questions: questions,
+          games: games,
         );
 
   /// Returns a shallow copy of this [Quiz]
@@ -91,12 +104,16 @@ class _QuizImpl extends Quiz {
     Object? id = _Undefined,
     String? title,
     List<_i2.Question>? questions,
+    Object? games = _Undefined,
   }) {
     return Quiz(
       id: id is int? ? id : this.id,
       title: title ?? this.title,
       questions:
           questions ?? this.questions.map((e0) => e0.copyWith()).toList(),
+      games: games is List<_i3.Game>?
+          ? games
+          : this.games?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

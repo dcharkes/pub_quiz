@@ -12,10 +12,14 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'answer.dart' as _i3;
-import 'question.dart' as _i4;
-import 'quiz.dart' as _i5;
-import 'package:pub_quiz_server/src/generated/quiz.dart' as _i6;
+import 'game.dart' as _i4;
+import 'player.dart' as _i5;
+import 'question.dart' as _i6;
+import 'quiz.dart' as _i7;
+import 'package:pub_quiz_server/src/generated/quiz.dart' as _i8;
 export 'answer.dart';
+export 'game.dart';
+export 'player.dart';
 export 'question.dart';
 export 'quiz.dart';
 
@@ -27,6 +31,128 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'game',
+      dartName: 'Game',
+      schema: 'public',
+      module: 'pub_quiz',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'game_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'quizId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'currentQuestion',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'deadline',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'game_fk_0',
+          columns: ['quizId'],
+          referenceTable: 'quiz',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'game_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'player',
+      dartName: 'Player',
+      schema: 'public',
+      module: 'pub_quiz',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'player_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'gameId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'score',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'player_fk_0',
+          columns: ['gameId'],
+          referenceTable: 'game',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'player_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
     _i2.TableDefinition(
       name: 'quiz',
       dartName: 'Quiz',
@@ -83,31 +209,53 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i3.Answer) {
       return _i3.Answer.fromJson(data) as T;
     }
-    if (t == _i4.Question) {
-      return _i4.Question.fromJson(data) as T;
+    if (t == _i4.Game) {
+      return _i4.Game.fromJson(data) as T;
     }
-    if (t == _i5.Quiz) {
-      return _i5.Quiz.fromJson(data) as T;
+    if (t == _i5.Player) {
+      return _i5.Player.fromJson(data) as T;
+    }
+    if (t == _i6.Question) {
+      return _i6.Question.fromJson(data) as T;
+    }
+    if (t == _i7.Quiz) {
+      return _i7.Quiz.fromJson(data) as T;
     }
     if (t == _i1.getType<_i3.Answer?>()) {
       return (data != null ? _i3.Answer.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i4.Question?>()) {
-      return (data != null ? _i4.Question.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.Game?>()) {
+      return (data != null ? _i4.Game.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.Quiz?>()) {
-      return (data != null ? _i5.Quiz.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.Player?>()) {
+      return (data != null ? _i5.Player.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i6.Question?>()) {
+      return (data != null ? _i6.Question.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i7.Quiz?>()) {
+      return (data != null ? _i7.Quiz.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<List<_i5.Player>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i5.Player>(e)).toList()
+          : null) as T;
     }
     if (t == List<_i3.Answer>) {
       return (data as List).map((e) => deserialize<_i3.Answer>(e)).toList()
           as T;
     }
-    if (t == List<_i4.Question>) {
-      return (data as List).map((e) => deserialize<_i4.Question>(e)).toList()
+    if (t == List<_i6.Question>) {
+      return (data as List).map((e) => deserialize<_i6.Question>(e)).toList()
           as T;
     }
-    if (t == List<_i6.Quiz>) {
-      return (data as List).map((e) => deserialize<_i6.Quiz>(e)).toList() as T;
+    if (t == _i1.getType<List<_i4.Game>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i4.Game>(e)).toList()
+          : null) as T;
+    }
+    if (t == List<_i8.Quiz>) {
+      return (data as List).map((e) => deserialize<_i8.Quiz>(e)).toList() as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -122,10 +270,16 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i3.Answer) {
       return 'Answer';
     }
-    if (data is _i4.Question) {
+    if (data is _i4.Game) {
+      return 'Game';
+    }
+    if (data is _i5.Player) {
+      return 'Player';
+    }
+    if (data is _i6.Question) {
       return 'Question';
     }
-    if (data is _i5.Quiz) {
+    if (data is _i7.Quiz) {
       return 'Quiz';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -144,11 +298,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Answer') {
       return deserialize<_i3.Answer>(data['data']);
     }
+    if (dataClassName == 'Game') {
+      return deserialize<_i4.Game>(data['data']);
+    }
+    if (dataClassName == 'Player') {
+      return deserialize<_i5.Player>(data['data']);
+    }
     if (dataClassName == 'Question') {
-      return deserialize<_i4.Question>(data['data']);
+      return deserialize<_i6.Question>(data['data']);
     }
     if (dataClassName == 'Quiz') {
-      return deserialize<_i5.Quiz>(data['data']);
+      return deserialize<_i7.Quiz>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -166,8 +326,12 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i5.Quiz:
-        return _i5.Quiz.t;
+      case _i4.Game:
+        return _i4.Game.t;
+      case _i5.Player:
+        return _i5.Player.t;
+      case _i7.Quiz:
+        return _i7.Quiz.t;
     }
     return null;
   }

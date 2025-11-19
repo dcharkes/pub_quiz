@@ -1,0 +1,14 @@
+### A game.
+class: Game
+
+table: game
+
+fields:
+  ### Quiz this game belongs to.
+  quiz: Quiz?, relation(name=quiz_games)
+  ### Current question index
+  currentQuestion: int
+  ### Deadline for the current question.
+  deadline: DateTime
+  ### The game participants.
+  players: List<Player>?, relation(name=game_players)

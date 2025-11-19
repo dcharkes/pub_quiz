@@ -8,3 +8,5 @@ fields:
   title: String
   ### The questions in this quiz.
   questions: List<Question>
+  ### The games played with this quiz.
+  games: List<Game>?, relation(name=quiz_games)

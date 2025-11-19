@@ -3,8 +3,8 @@ description: The TV display for the Pub Quiz, built with Flutter.
 publish_to: none
 
 environment:
-  sdk: '>=3.10.0 <4.0.0'
-  flutter: '>=3.10.0'
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 flutter:
   uses-material-design: true
@@ -14,11 +14,9 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
-  pub_quiz_shared:
-    path: ../pub_quiz_shared
-  pub_quiz_widgets:
-    path: ../pub_quiz_widgets
   go_router: ^17.0.0
+  pub_quiz_shared: any
+  pub_quiz_widgets: any
   serverpod_flutter: ^2.9.2
 
 dev_dependencies:

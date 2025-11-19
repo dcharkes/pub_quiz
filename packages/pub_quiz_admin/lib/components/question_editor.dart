@@ -1,11 +1,16 @@
 import 'package:jaspr/jaspr.dart';
 
-import 'package:pub_quiz_client/pub_quiz_client.dart';
+import 'package:pub_quiz_client/pub_quiz_client.dart' hide VoidCallback;
 
 class QuestionEditor extends StatefulComponent {
-  const QuestionEditor({super.key, required this.question});
+  const QuestionEditor({
+    super.key,
+    required this.question,
+    required this.onDelete,
+  });
 
   final Question question;
+  final VoidCallback onDelete;
 
   @override
   State<QuestionEditor> createState() => _QuizQuestionEditorState();
@@ -79,6 +84,13 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
                 ],
               );
             }),
+          ],
+        ),
+        button(
+          onClick: component.onDelete,
+          [
+            i(classes: 'material-icons md-18', [text('delete')]),
+            text('Delete'),
           ],
         ),
       ],

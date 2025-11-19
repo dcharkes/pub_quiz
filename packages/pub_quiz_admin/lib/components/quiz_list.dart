@@ -13,18 +13,21 @@ class QuizList extends StatefulComponent {
 }
 
 class QuizListState extends State<QuizList> {
-  List<Quiz> quizzes = [];
+  List<Quiz> _quizzes = [];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    DbProvider.of(context).quiz.readQuizzes().then((q) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        quizzes = q;
-      });
+    _loadQuizzes();
+  }
+
+  void _loadQuizzes() async {
+    final quizzes = await DbProvider.of(context).quiz.readQuizzes();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _quizzes = quizzes;
     });
   }
 
@@ -32,7 +35,7 @@ class QuizListState extends State<QuizList> {
   Component build(BuildContext context) {
     return ul(
       classes: 'quiz-list',
-      quizzes
+      _quizzes
           .map(
             (quiz) => li(
               classes: 'quiz-list-item',
@@ -45,6 +48,21 @@ class QuizListState extends State<QuizList> {
                   [
                     i(classes: 'material-icons md-18', [text('edit')]),
                     text('Edit'),
+                  ],
+                ),
+                button(
+                  onClick: () async {
+                    setState(() {
+                      _quizzes.remove(quiz);
+                    });
+                    await DbProvider.of(context).quiz.deleteQuiz(quiz);
+                    if (mounted) {
+                      _loadQuizzes();
+                    }
+                  },
+                  [
+                    i(classes: 'material-icons md-18', [text('delete')]),
+                    text('Delete'),
                   ],
                 ),
               ],

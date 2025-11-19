@@ -70,7 +70,14 @@ class _CounterState extends State<QuizEditor> {
             classes: 'question-list',
             [
               for (final question in _quiz!.questions)
-                QuestionEditor(question: question),
+                QuestionEditor(
+                  question: question,
+                  onDelete: () {
+                    setState(() {
+                      _quiz!.questions.remove(question);
+                    });
+                  },
+                ),
             ],
           ),
           button(

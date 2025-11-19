@@ -1,7 +1,6 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
-import 'components/header.dart';
 import 'pages/editor.dart';
 import 'pages/home.dart';
 
@@ -15,7 +14,6 @@ class App extends StatelessComponent {
         routes: [
           ShellRoute(
             builder: (context, state, child) => fragment([
-              const Header(),
               child,
             ]),
             routes: [

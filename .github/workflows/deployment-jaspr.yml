@@ -22,7 +22,7 @@ jobs:
       - name: Install Jaspr CLI
         run: dart pub global activate jaspr_cli
       - name: Install dependencies
-        run: jaspr pub get
+        run: dart pub get
       - name: Build Jaspr app
         run: jaspr build --dart-define=SERVER_URL=${{ secrets.ADMIN_URL }}
       - name: Archive production artifacts

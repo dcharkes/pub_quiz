@@ -5,6 +5,7 @@ Stream<void> nowAndLater(Duration duration) async* {
   yield null;
   yield* Stream<void>.periodic(duration);
 }
+
 Future<PlayerClient> connectFakeClient(String gameId) async {
   return FakeClient(
     fakeQuiz,
@@ -16,12 +17,23 @@ Future<PlayerClient> connectFakeClient(String gameId) async {
 abstract interface class PlayerClient {
   QuizDescription get quizDescription;
   Stream<PlayerQuestion> get questionsStream;
+  Future<GameResults> getResults();
 
   Future<void> recordAnswer(int questionId, int answerId);
 
   Future<void> join(String name);
 
   void dispose();
+}
+
+class GameResults {
+  final int correctAnswers;
+  final int totalAnswers;
+
+  GameResults({
+    required this.correctAnswers,
+    required this.totalAnswers,
+  });
 }
 
 class PlayerQuestion {
@@ -108,8 +120,24 @@ class FakeClient implements PlayerClient {
     );
   }
 
+  int _correctAnswers = 0;
+  int _totalAnswers = 0;
+
   @override
-  Future<void> recordAnswer(int questionId, int answerId) async {}
+  Future<void> recordAnswer(int questionId, int answerId) async {
+    _totalAnswers++;
+    if (questions[questionId].answers[answerId].correct) {
+      _correctAnswers++;
+    }
+  }
+
+  @override
+  Future<GameResults> getResults() async {
+    return GameResults(
+      correctAnswers: _correctAnswers,
+      totalAnswers: _totalAnswers,
+    );
+  }
 
   @override
   Future<void> join(String name) async {}

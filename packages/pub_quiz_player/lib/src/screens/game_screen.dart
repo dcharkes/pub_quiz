@@ -87,7 +87,17 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isGameOver) {
-      return const GameOverScreen();
+      return FutureBuilder<GameResults>(
+        future: widget.client.getResults(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return GameOverScreen(results: snapshot.data!);
+          }
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        },
+      );
     }
 
     if (_currentQuestion == null) {

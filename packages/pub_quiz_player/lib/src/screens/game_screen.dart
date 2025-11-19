@@ -80,12 +80,7 @@ class _GameScreenState extends State<GameScreen> {
       _hasAnswered = true;
     });
 
-    if (_currentQuestion!.question.id != null) {
-      await widget.client.recordAnswer(
-        _currentQuestion!.question.id!,
-        answerId,
-      );
-    }
+    await widget.client.recordAnswer(_currentQuestion!.index, answerId);
   }
 
   @override
@@ -127,7 +122,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     final question = _currentQuestion!.question;
-    final answers = question.answers ?? [];
+    final answers = _currentQuestion!.answers;
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.client.quizDescription.title)),
@@ -154,10 +149,8 @@ class _GameScreenState extends State<GameScreen> {
                 childAspectRatio: 1.5,
                 children: answers.map((answer) {
                   return FilledButton(
-                    onPressed: answer.id != null
-                        ? () => _submitAnswer(answer.id!)
-                        : null,
-                    child: Text(answer.text),
+                    onPressed: () => _submitAnswer(answer.answerId),
+                    child: Text(answer.answer.text),
                   );
                 }).toList(),
               ),

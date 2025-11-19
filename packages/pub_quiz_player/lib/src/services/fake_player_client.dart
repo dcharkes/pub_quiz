@@ -22,9 +22,35 @@ abstract interface class PlayerClient {
 
 class PlayerQuestion {
   final Question question;
+  final int index;
   final DateTime timeout;
+  final List<PlayerAnswer> answers;
 
-  PlayerQuestion({required this.question, required this.timeout});
+  PlayerQuestion({
+    required this.question,
+    required this.timeout,
+    required this.index,
+  }) : answers = question.answers.indexed
+           .map<PlayerAnswer>(
+             (e) => PlayerAnswer(
+               answer: e.$2,
+               questionId: index,
+               answerId: e.$1,
+             ),
+           )
+           .toList();
+}
+
+class PlayerAnswer {
+  final Answer answer;
+  final int questionId;
+  final int answerId;
+
+  PlayerAnswer({
+    required this.answer,
+    required this.questionId,
+    required this.answerId,
+  });
 }
 
 /// Player-relevant projection of a quiz.
@@ -57,7 +83,7 @@ class FakeClient implements PlayerClient {
     Stream<void> clicks, {
     Duration interval = const Duration(seconds: 30),
   }) : quizDescription = QuizDescription.fromQuiz(quiz),
-       questions = quiz.questions!,
+       questions = quiz.questions,
        _interval = interval {
     _clicksSubscription = clicks.listen((_) => _onClick());
   }
@@ -73,6 +99,7 @@ class FakeClient implements PlayerClient {
       PlayerQuestion(
         question: questions[_currentQuestion],
         timeout: DateTime.now().add(_interval),
+        index: _currentQuestion,
       ),
     );
   }
@@ -95,202 +122,137 @@ final fakeQuiz = Quiz(
   title: 'Dart & Flutter Fundamentals',
   questions: [
     Question(
-      id: 1,
-      quizId: 1,
       question: 'What is Dart primarily used for?',
       answers: [
         Answer(
-          id: 11,
-          questionId: 1,
           text: 'Web development',
           correct: false,
         ),
         Answer(
-          id: 12,
-          questionId: 1,
           text: 'Mobile app development (Flutter)',
           correct: true,
         ),
         Answer(
-          id: 13,
-          questionId: 1,
           text: 'Backend services',
           correct: false,
         ),
-        Answer(id: 14, questionId: 1, text: 'Data analysis', correct: false),
+        Answer(text: 'Data analysis', correct: false),
       ],
     ),
     Question(
-      id: 2,
-      quizId: 1,
       question: 'Which of these is NOT a type of widget in Flutter?',
       answers: [
         Answer(
-          id: 21,
-          questionId: 2,
           text: 'StatelessWidget',
           correct: false,
         ),
         Answer(
-          id: 22,
-          questionId: 2,
           text: 'StatefulWidget',
           correct: false,
         ),
         Answer(
-          id: 23,
-          questionId: 2,
           text: 'FunctionalWidget',
           correct: true,
         ),
         Answer(
-          id: 24,
-          questionId: 2,
           text: 'InheritedWidget',
           correct: false,
         ),
       ],
     ),
     Question(
-      id: 3,
-      quizId: 1,
       question: 'What keyword is used to define a nullable type in Dart?',
       answers: [
-        Answer(id: 31, questionId: 3, text: 'nullable', correct: false),
-        Answer(id: 32, questionId: 3, text: '?', correct: true),
-        Answer(id: 33, questionId: 3, text: '!', correct: false),
-        Answer(id: 34, questionId: 3, text: 'void', correct: false),
+        Answer(text: 'nullable', correct: false),
+        Answer(text: '?', correct: true),
+        Answer(text: '!', correct: false),
+        Answer(text: 'void', correct: false),
       ],
     ),
     Question(
-      id: 4,
-      quizId: 1,
       question: 'How do you arrange widgets vertically in Flutter?',
       answers: [
-        Answer(id: 41, questionId: 4, text: 'Row', correct: false),
-        Answer(id: 42, questionId: 4, text: 'Stack', correct: false),
-        Answer(id: 43, questionId: 4, text: 'Column', correct: true),
-        Answer(id: 44, questionId: 4, text: 'Wrap', correct: false),
+        Answer(text: 'Row', correct: false),
+        Answer(text: 'Stack', correct: false),
+        Answer(text: 'Column', correct: true),
+        Answer(text: 'Wrap', correct: false),
       ],
     ),
     Question(
-      id: 5,
-      quizId: 1,
       question:
           'Which keyword is used to mark a function as asynchronous in Dart?',
       answers: [
-        Answer(id: 51, questionId: 5, text: 'sync', correct: false),
-        Answer(id: 52, questionId: 5, text: 'await', correct: false),
-        Answer(id: 53, questionId: 5, text: 'async', correct: true),
-        Answer(id: 54, questionId: 5, text: 'future', correct: false),
+        Answer(text: 'sync', correct: false),
+        Answer(text: 'await', correct: false),
+        Answer(text: 'async', correct: true),
+        Answer(text: 'future', correct: false),
       ],
     ),
     Question(
-      id: 6,
-      quizId: 1,
       question: 'What is the package manager for Dart?',
       answers: [
-        Answer(id: 61, questionId: 6, text: 'npm', correct: false),
-        Answer(id: 62, questionId: 6, text: 'pub', correct: true),
-        Answer(id: 63, questionId: 6, text: 'yarn', correct: false),
-        Answer(id: 64, questionId: 6, text: 'pip', correct: false),
+        Answer(text: 'npm', correct: false),
+        Answer(text: 'pub', correct: true),
+        Answer(text: 'yarn', correct: false),
+        Answer(text: 'pip', correct: false),
       ],
     ),
     Question(
-      id: 7,
-      quizId: 1,
       question: 'What does Flutter\'s "Hot Reload" feature do?',
       answers: [
         Answer(
-          id: 71,
-          questionId: 7,
           text: 'Restarts the entire application',
           correct: false,
         ),
         Answer(
-          id: 72,
-          questionId: 7,
           text: 'Recompiles the entire application from scratch',
           correct: false,
         ),
         Answer(
-          id: 73,
-          questionId: 7,
           text: 'Injects updated source code into the running app',
           correct: true,
         ),
         Answer(
-          id: 74,
-          questionId: 7,
           text: 'Deploys the app to a remote server',
           correct: false,
         ),
       ],
     ),
     Question(
-      id: 8,
-      quizId: 1,
       question:
           'Which of these is a common state management solution in Flutter?',
       answers: [
-        Answer(id: 81, questionId: 8, text: 'Redux', correct: false),
-        Answer(
-          id: 82,
-          questionId: 8,
-          text: 'BLoC (Business Logic Component)',
-          correct: true,
-        ),
-        Answer(id: 83, questionId: 8, text: 'AngularJS', correct: false),
-        Answer(id: 84, questionId: 8, text: 'React Hooks', correct: false),
+        Answer(text: 'Redux', correct: false),
+        Answer(text: 'BLoC (Business Logic Component)', correct: true),
+        Answer(text: 'AngularJS', correct: false),
+        Answer(text: 'React Hooks', correct: false),
       ],
     ),
     Question(
-      id: 9,
-      quizId: 1,
       question: 'What command is used to create a new Flutter project?',
       answers: [
-        Answer(
-          id: 91,
-          questionId: 9,
-          text: 'flutter new app',
-          correct: false,
-        ),
-        Answer(id: 92, questionId: 9, text: 'flutter create', correct: true),
-        Answer(
-          id: 93,
-          questionId: 9,
-          text: 'dart create flutter_app',
-          correct: false,
-        ),
-        Answer(id: 94, questionId: 9, text: 'flutter init', correct: false),
+        Answer(text: 'flutter new app', correct: false),
+        Answer(text: 'flutter create', correct: true),
+        Answer(text: 'dart create flutter_app', correct: false),
+        Answer(text: 'flutter init', correct: false),
       ],
     ),
     Question(
-      id: 10,
-      quizId: 1,
       question: 'In Dart, what is the purpose of the `final` keyword?',
       answers: [
         Answer(
-          id: 101,
-          questionId: 10,
           text: 'To make a variable immutable at compile-time',
           correct: false,
         ),
         Answer(
-          id: 102,
-          questionId: 10,
           text: 'To make a variable immutable after its first assignment',
           correct: true,
         ),
         Answer(
-          id: 103,
-          questionId: 10,
           text: 'To declare a constant value',
           correct: false,
         ),
         Answer(
-          id: 104,
-          questionId: 10,
           text: 'To define a static variable',
           correct: false,
         ),

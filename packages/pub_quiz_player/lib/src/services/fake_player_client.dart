@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
+Stream<void> nowAndLater(Duration duration) async* {
+  yield null;
+  yield* Stream<void>.periodic(duration);
+}
 Future<PlayerClient> connectFakeClient(String gameId) async {
   return FakeClient(
     fakeQuiz,
-    Stream<void>.periodic(const Duration(seconds: 10)),
-    interval: const Duration(seconds: 8),
+    nowAndLater(const Duration(seconds: 10)),
+    interval: const Duration(seconds: 9),
   );
 }
 

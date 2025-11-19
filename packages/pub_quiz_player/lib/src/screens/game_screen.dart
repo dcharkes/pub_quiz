@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pub_quiz_widgets/pub_quiz_widgets.dart';
 import '../services/fake_player_client.dart';
 import 'game_over_screen.dart';
+import 'question_screen.dart';
 
 class GameScreen extends StatefulWidget {
   final PlayerClient client;
@@ -121,43 +122,11 @@ class _GameScreenState extends State<GameScreen> {
       );
     }
 
-    final question = _currentQuestion!.question;
-    final answers = _currentQuestion!.answers;
-
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.client.quizDescription.title)),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              '$_timeLeft s',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              question.question,
-              style: Theme.of(context).textTheme.titleLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.5,
-                children: answers.map((answer) {
-                  return FilledButton(
-                    onPressed: () => _submitAnswer(answer.answerId),
-                    child: Text(answer.answer.text),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return QuestionScreen(
+      question: _currentQuestion!,
+      quizTitle: widget.client.quizDescription.title,
+      timeLeft: _timeLeft,
+      onAnswerSelected: _submitAnswer,
     );
   }
 }

@@ -11,10 +11,46 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i3;
-import 'package:pub_quiz_client/src/protocol/game_result.dart' as _i4;
+import 'package:pub_quiz_client/src/protocol/game_result.dart' as _i3;
+import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i4;
 import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i5;
 import 'protocol.dart' as _i6;
+
+/// {@category Endpoint}
+class EndpointGame extends _i1.EndpointRef {
+  EndpointGame(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'game';
+
+  _i2.Future<int> startGame(int quizId) => caller.callServerEndpoint<int>(
+        'game',
+        'startGame',
+        {'quizId': quizId},
+      );
+
+  _i2.Future<void> setQuestion(
+    int gameId,
+    int questionIndex,
+    Duration duration,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'game',
+        'setQuestion',
+        {
+          'gameId': gameId,
+          'questionIndex': questionIndex,
+          'duration': duration,
+        },
+      );
+
+  _i2.Future<_i3.GameResult> finishGame(int gameId) =>
+      caller.callServerEndpoint<_i3.GameResult>(
+        'game',
+        'finishGame',
+        {'gameId': gameId},
+      );
+}
 
 /// {@category Endpoint}
 class EndpointPlayer extends _i1.EndpointRef {
@@ -53,17 +89,17 @@ class EndpointPlayer extends _i1.EndpointRef {
         },
       );
 
-  _i2.Stream<_i3.LiveQuestion> getQuestions(int gameId) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i3.LiveQuestion>,
-          _i3.LiveQuestion>(
+  _i2.Stream<_i4.LiveQuestion> getQuestions(int gameId) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i4.LiveQuestion>,
+          _i4.LiveQuestion>(
         'player',
         'getQuestions',
         {'gameId': gameId},
         {},
       );
 
-  _i2.Future<_i4.GameResult> getResults(int gameId) =>
-      caller.callServerEndpoint<_i4.GameResult>(
+  _i2.Future<_i3.GameResult> getResults(int gameId) =>
+      caller.callServerEndpoint<_i3.GameResult>(
         'player',
         'getResults',
         {'gameId': gameId},
@@ -138,9 +174,12 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    game = EndpointGame(this);
     player = EndpointPlayer(this);
     quiz = EndpointQuiz(this);
   }
+
+  late final EndpointGame game;
 
   late final EndpointPlayer player;
 
@@ -148,6 +187,7 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'game': game,
         'player': player,
         'quiz': quiz,
       };

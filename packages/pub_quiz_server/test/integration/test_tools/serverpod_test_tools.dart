@@ -14,8 +14,8 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:pub_quiz_server/src/generated/live_question.dart' as _i4;
-import 'package:pub_quiz_server/src/generated/game_result.dart' as _i5;
+import 'package:pub_quiz_server/src/generated/game_result.dart' as _i4;
+import 'package:pub_quiz_server/src/generated/live_question.dart' as _i5;
 import 'package:pub_quiz_server/src/generated/quiz.dart' as _i6;
 import 'package:pub_quiz_server/src/generated/protocol.dart';
 import 'package:pub_quiz_server/src/generated/endpoints.dart';
@@ -103,6 +103,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _GameEndpoint game;
+
   late final _PlayerEndpoint player;
 
   late final _QuizEndpoint quiz;
@@ -115,6 +117,10 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
+    game = _GameEndpoint(
+      endpoints,
+      serializationManager,
+    );
     player = _PlayerEndpoint(
       endpoints,
       serializationManager,
@@ -123,6 +129,110 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+  }
+}
+
+class _GameEndpoint {
+  _GameEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<int> startGame(
+    _i1.TestSessionBuilder sessionBuilder,
+    int quizId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'game',
+        method: 'startGame',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'game',
+          methodName: 'startGame',
+          parameters: _i1.testObjectToJson({'quizId': quizId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> setQuestion(
+    _i1.TestSessionBuilder sessionBuilder,
+    int gameId,
+    int questionIndex,
+    Duration duration,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'game',
+        method: 'setQuestion',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'game',
+          methodName: 'setQuestion',
+          parameters: _i1.testObjectToJson({
+            'gameId': gameId,
+            'questionIndex': questionIndex,
+            'duration': duration,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.GameResult> finishGame(
+    _i1.TestSessionBuilder sessionBuilder,
+    int gameId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'game',
+        method: 'finishGame',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'game',
+          methodName: 'finishGame',
+          parameters: _i1.testObjectToJson({'gameId': gameId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.GameResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
   }
 }
 
@@ -206,11 +316,11 @@ class _PlayerEndpoint {
     });
   }
 
-  _i3.Stream<_i4.LiveQuestion> getQuestions(
+  _i3.Stream<_i5.LiveQuestion> getQuestions(
     _i1.TestSessionBuilder sessionBuilder,
     int gameId,
   ) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i4.LiveQuestion>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i5.LiveQuestion>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =
@@ -238,7 +348,7 @@ class _PlayerEndpoint {
     return _localTestStreamManager.outputStreamController.stream;
   }
 
-  _i3.Future<_i5.GameResult> getResults(
+  _i3.Future<_i4.GameResult> getResults(
     _i1.TestSessionBuilder sessionBuilder,
     int gameId,
   ) async {
@@ -259,7 +369,7 @@ class _PlayerEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.GameResult>);
+        ) as _i3.Future<_i4.GameResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

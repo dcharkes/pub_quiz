@@ -10,27 +10,106 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../player_endpoint.dart' as _i2;
-import '../quiz_endpoint.dart' as _i3;
-import 'package:pub_quiz_server/src/generated/quiz.dart' as _i4;
+import '../game_endpoint.dart' as _i2;
+import '../player_endpoint.dart' as _i3;
+import '../quiz_endpoint.dart' as _i4;
+import 'package:pub_quiz_server/src/generated/quiz.dart' as _i5;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'player': _i2.PlayerEndpoint()
+      'game': _i2.GameEndpoint()
+        ..initialize(
+          server,
+          'game',
+          null,
+        ),
+      'player': _i3.PlayerEndpoint()
         ..initialize(
           server,
           'player',
           null,
         ),
-      'quiz': _i3.QuizEndpoint()
+      'quiz': _i4.QuizEndpoint()
         ..initialize(
           server,
           'quiz',
           null,
         ),
     };
+    connectors['game'] = _i1.EndpointConnector(
+      name: 'game',
+      endpoint: endpoints['game']!,
+      methodConnectors: {
+        'startGame': _i1.MethodConnector(
+          name: 'startGame',
+          params: {
+            'quizId': _i1.ParameterDescription(
+              name: 'quizId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['game'] as _i2.GameEndpoint).startGame(
+            session,
+            params['quizId'],
+          ),
+        ),
+        'setQuestion': _i1.MethodConnector(
+          name: 'setQuestion',
+          params: {
+            'gameId': _i1.ParameterDescription(
+              name: 'gameId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'questionIndex': _i1.ParameterDescription(
+              name: 'questionIndex',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'duration': _i1.ParameterDescription(
+              name: 'duration',
+              type: _i1.getType<Duration>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['game'] as _i2.GameEndpoint).setQuestion(
+            session,
+            params['gameId'],
+            params['questionIndex'],
+            params['duration'],
+          ),
+        ),
+        'finishGame': _i1.MethodConnector(
+          name: 'finishGame',
+          params: {
+            'gameId': _i1.ParameterDescription(
+              name: 'gameId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['game'] as _i2.GameEndpoint).finishGame(
+            session,
+            params['gameId'],
+          ),
+        ),
+      },
+    );
     connectors['player'] = _i1.EndpointConnector(
       name: 'player',
       endpoint: endpoints['player']!,
@@ -53,7 +132,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['player'] as _i2.PlayerEndpoint).joinGame(
+              (endpoints['player'] as _i3.PlayerEndpoint).joinGame(
             session,
             params['gameId'],
             params['name'],
@@ -87,7 +166,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['player'] as _i2.PlayerEndpoint).recordAnswer(
+              (endpoints['player'] as _i3.PlayerEndpoint).recordAnswer(
             session,
             params['playerId'],
             params['questionIndex'],
@@ -108,7 +187,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['player'] as _i2.PlayerEndpoint).getResults(
+              (endpoints['player'] as _i3.PlayerEndpoint).getResults(
             session,
             params['gameId'],
           ),
@@ -129,7 +208,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
             Map<String, Stream> streamParams,
           ) =>
-              (endpoints['player'] as _i2.PlayerEndpoint).getQuestions(
+              (endpoints['player'] as _i3.PlayerEndpoint).getQuestions(
             session,
             params['gameId'],
           ),
@@ -145,7 +224,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'quiz': _i1.ParameterDescription(
               name: 'quiz',
-              type: _i1.getType<_i4.Quiz>(),
+              type: _i1.getType<_i5.Quiz>(),
               nullable: false,
             )
           },
@@ -153,7 +232,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['quiz'] as _i3.QuizEndpoint).createQuiz(
+              (endpoints['quiz'] as _i4.QuizEndpoint).createQuiz(
             session,
             params['quiz'],
           ),
@@ -171,7 +250,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['quiz'] as _i3.QuizEndpoint).readQuiz(
+              (endpoints['quiz'] as _i4.QuizEndpoint).readQuiz(
             session,
             params['id'],
           ),
@@ -183,14 +262,14 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['quiz'] as _i3.QuizEndpoint).readQuizzes(session),
+              (endpoints['quiz'] as _i4.QuizEndpoint).readQuizzes(session),
         ),
         'updateQuiz': _i1.MethodConnector(
           name: 'updateQuiz',
           params: {
             'quiz': _i1.ParameterDescription(
               name: 'quiz',
-              type: _i1.getType<_i4.Quiz>(),
+              type: _i1.getType<_i5.Quiz>(),
               nullable: false,
             )
           },
@@ -198,7 +277,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['quiz'] as _i3.QuizEndpoint).updateQuiz(
+              (endpoints['quiz'] as _i4.QuizEndpoint).updateQuiz(
             session,
             params['quiz'],
           ),
@@ -208,7 +287,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'quiz': _i1.ParameterDescription(
               name: 'quiz',
-              type: _i1.getType<_i4.Quiz>(),
+              type: _i1.getType<_i5.Quiz>(),
               nullable: false,
             )
           },
@@ -216,7 +295,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['quiz'] as _i3.QuizEndpoint).deleteQuiz(
+              (endpoints['quiz'] as _i4.QuizEndpoint).deleteQuiz(
             session,
             params['quiz'],
           ),

@@ -1,3 +1,7 @@
+game:
+  - startGame:
+  - setQuestion:
+  - finishGame:
 player:
   - joinGame:
   - recordAnswer:

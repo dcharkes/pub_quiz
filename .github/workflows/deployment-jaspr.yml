@@ -5,6 +5,7 @@ on:
     paths:
       - "packages/pub_quiz_admin/**"
       - ".github/workflows/deployment-jaspr.yml"
+      - "packages/pub_quiz_server/docker-compose.production.yaml"
   workflow_dispatch:
 
 jobs:
@@ -37,18 +38,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: admin-app-build
-          path: packages/pub_quiz_admin/build/web
+          path: packages/pub_quiz_admin/build/jaspr
+          if-no-files-found: error
 
   deploy-jaspr-app:
     needs: build-jaspr-app
     name: Deploy Jaspr App to Server
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: admin-app-build
-          path: build/web
+          path: build_output
 
       - name: Setup SSH
         run: |
@@ -57,12 +62,21 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy files to server
+      - name: Deploy to server
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /var/www/pub_quiz_admin && rm -rf /var/www/pub_quiz_admin/*"
           
-          scp -r build/web/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/pub_quiz_admin/
+          scp -r build_output/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/pub_quiz_admin/
 
+          scp packages/pub_quiz_server/docker-compose.production.yaml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/docker-compose.production.yaml
+
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            touch .env
+            sed -i '/^ADMIN_URL=/d' .env
+            echo 'ADMIN_URL=${{ secrets.ADMIN_URL }}' >> .env
+            
+            docker compose -f ~/docker-compose.production.yaml up -d --no-deps admin-frontend
+          "
       - name: Cleanup SSH key
         if: always()
         run: rm -rf ~/.ssh

@@ -1,3 +1,8 @@
+player:
+  - joinGame:
+  - recordAnswer:
+  - getQuestions:
+  - getResults:
 quiz:
   - createQuiz:
   - readQuiz:

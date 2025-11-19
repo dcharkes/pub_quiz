@@ -1,0 +1,7 @@
+enum: GameEventType
+values:
+  - start
+  - question
+  - player_joined
+  - player_answered
+  - end

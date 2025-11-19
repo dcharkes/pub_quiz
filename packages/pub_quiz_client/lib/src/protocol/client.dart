@@ -11,8 +11,64 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i3;
-import 'protocol.dart' as _i4;
+import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i3;
+import 'package:pub_quiz_client/src/protocol/game_result.dart' as _i4;
+import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i5;
+import 'protocol.dart' as _i6;
+
+/// {@category Endpoint}
+class EndpointPlayer extends _i1.EndpointRef {
+  EndpointPlayer(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'player';
+
+  _i2.Future<int> joinGame(
+    int gameId,
+    String name,
+  ) =>
+      caller.callServerEndpoint<int>(
+        'player',
+        'joinGame',
+        {
+          'gameId': gameId,
+          'name': name,
+        },
+      );
+
+  _i2.Future<int> recordAnswer(
+    int playerId,
+    int questionIndex,
+    int answerIndex,
+    DateTime answerTime,
+  ) =>
+      caller.callServerEndpoint<int>(
+        'player',
+        'recordAnswer',
+        {
+          'playerId': playerId,
+          'questionIndex': questionIndex,
+          'answerIndex': answerIndex,
+          'answerTime': answerTime,
+        },
+      );
+
+  _i2.Stream<_i3.LiveQuestion> getQuestions(int gameId) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i3.LiveQuestion>,
+          _i3.LiveQuestion>(
+        'player',
+        'getQuestions',
+        {'gameId': gameId},
+        {},
+      );
+
+  _i2.Future<_i4.GameResult> getResults(int gameId) =>
+      caller.callServerEndpoint<_i4.GameResult>(
+        'player',
+        'getResults',
+        {'gameId': gameId},
+      );
+}
 
 /// {@category Endpoint}
 class EndpointQuiz extends _i1.EndpointRef {
@@ -21,35 +77,35 @@ class EndpointQuiz extends _i1.EndpointRef {
   @override
   String get name => 'quiz';
 
-  _i2.Future<_i3.Quiz> createQuiz(_i3.Quiz quiz) =>
-      caller.callServerEndpoint<_i3.Quiz>(
+  _i2.Future<_i5.Quiz> createQuiz(_i5.Quiz quiz) =>
+      caller.callServerEndpoint<_i5.Quiz>(
         'quiz',
         'createQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<_i3.Quiz?> readQuiz(int id) =>
-      caller.callServerEndpoint<_i3.Quiz?>(
+  _i2.Future<_i5.Quiz?> readQuiz(int id) =>
+      caller.callServerEndpoint<_i5.Quiz?>(
         'quiz',
         'readQuiz',
         {'id': id},
       );
 
-  _i2.Future<List<_i3.Quiz>> readQuizzes() =>
-      caller.callServerEndpoint<List<_i3.Quiz>>(
+  _i2.Future<List<_i5.Quiz>> readQuizzes() =>
+      caller.callServerEndpoint<List<_i5.Quiz>>(
         'quiz',
         'readQuizzes',
         {},
       );
 
-  _i2.Future<_i3.Quiz> updateQuiz(_i3.Quiz quiz) =>
-      caller.callServerEndpoint<_i3.Quiz>(
+  _i2.Future<_i5.Quiz> updateQuiz(_i5.Quiz quiz) =>
+      caller.callServerEndpoint<_i5.Quiz>(
         'quiz',
         'updateQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<void> deleteQuiz(_i3.Quiz quiz) => caller.callServerEndpoint<void>(
+  _i2.Future<void> deleteQuiz(_i5.Quiz quiz) => caller.callServerEndpoint<void>(
         'quiz',
         'deleteQuiz',
         {'quiz': quiz},
@@ -72,7 +128,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i4.Protocol(),
+          _i6.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -82,13 +138,19 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    player = EndpointPlayer(this);
     quiz = EndpointQuiz(this);
   }
+
+  late final EndpointPlayer player;
 
   late final EndpointQuiz quiz;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {'quiz': quiz};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'player': player,
+        'quiz': quiz,
+      };
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {};

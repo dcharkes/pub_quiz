@@ -1,0 +1,10 @@
+### Game lifecycle event.
+class: GameEvent
+
+fields:
+  ### Event type.
+  type: GameEventType
+  ### Game this event belongs to.
+  game: Game
+  ### Associated player. Set only for `player_joined` and `player_answered` events.
+  player: Player?  

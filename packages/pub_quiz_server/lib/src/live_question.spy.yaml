@@ -1,0 +1,7 @@
+class: LiveQuestion
+
+fields:
+  question: Question
+  index: int
+  startedAt: DateTime
+  deadline: DateTime

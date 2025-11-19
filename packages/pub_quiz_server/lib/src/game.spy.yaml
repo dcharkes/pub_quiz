@@ -6,8 +6,10 @@ table: game
 fields:
   ### Quiz this game belongs to.
   quiz: Quiz?, relation(name=quiz_games)
-  ### Current question index
+  ### Current question index. -1 if not started, quiz.questions.length if finished.
   currentQuestion: int
+  ### Question start time.
+  questionStart: DateTime
   ### Deadline for the current question.
   deadline: DateTime
   ### The game participants.

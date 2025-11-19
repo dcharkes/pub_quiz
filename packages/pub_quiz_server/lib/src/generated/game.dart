@@ -22,6 +22,7 @@ abstract class Game implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.quizId,
     this.quiz,
     required this.currentQuestion,
+    required this.questionStart,
     required this.deadline,
     this.players,
   });
@@ -31,6 +32,7 @@ abstract class Game implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required int quizId,
     _i2.Quiz? quiz,
     required int currentQuestion,
+    required DateTime questionStart,
     required DateTime deadline,
     List<_i3.Player>? players,
   }) = _GameImpl;
@@ -44,6 +46,8 @@ abstract class Game implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           : _i2.Quiz.fromJson(
               (jsonSerialization['quiz'] as Map<String, dynamic>)),
       currentQuestion: jsonSerialization['currentQuestion'] as int,
+      questionStart: _i1.DateTimeJsonExtension.fromJson(
+          jsonSerialization['questionStart']),
       deadline:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['deadline']),
       players: (jsonSerialization['players'] as List?)
@@ -64,8 +68,11 @@ abstract class Game implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   /// Quiz this game belongs to.
   _i2.Quiz? quiz;
 
-  /// Current question index
+  /// Current question index. -1 if not started, quiz.questions.length if finished.
   int currentQuestion;
+
+  /// Question start time.
+  DateTime questionStart;
 
   /// Deadline for the current question.
   DateTime deadline;
@@ -84,6 +91,7 @@ abstract class Game implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? quizId,
     _i2.Quiz? quiz,
     int? currentQuestion,
+    DateTime? questionStart,
     DateTime? deadline,
     List<_i3.Player>? players,
   });
@@ -94,6 +102,7 @@ abstract class Game implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'quizId': quizId,
       if (quiz != null) 'quiz': quiz?.toJson(),
       'currentQuestion': currentQuestion,
+      'questionStart': questionStart.toJson(),
       'deadline': deadline.toJson(),
       if (players != null)
         'players': players?.toJson(valueToJson: (v) => v.toJson()),
@@ -107,6 +116,7 @@ abstract class Game implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'quizId': quizId,
       if (quiz != null) 'quiz': quiz?.toJsonForProtocol(),
       'currentQuestion': currentQuestion,
+      'questionStart': questionStart.toJson(),
       'deadline': deadline.toJson(),
       if (players != null)
         'players': players?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -157,6 +167,7 @@ class _GameImpl extends Game {
     required int quizId,
     _i2.Quiz? quiz,
     required int currentQuestion,
+    required DateTime questionStart,
     required DateTime deadline,
     List<_i3.Player>? players,
   }) : super._(
@@ -164,6 +175,7 @@ class _GameImpl extends Game {
           quizId: quizId,
           quiz: quiz,
           currentQuestion: currentQuestion,
+          questionStart: questionStart,
           deadline: deadline,
           players: players,
         );
@@ -177,6 +189,7 @@ class _GameImpl extends Game {
     int? quizId,
     Object? quiz = _Undefined,
     int? currentQuestion,
+    DateTime? questionStart,
     DateTime? deadline,
     Object? players = _Undefined,
   }) {
@@ -185,6 +198,7 @@ class _GameImpl extends Game {
       quizId: quizId ?? this.quizId,
       quiz: quiz is _i2.Quiz? ? quiz : this.quiz?.copyWith(),
       currentQuestion: currentQuestion ?? this.currentQuestion,
+      questionStart: questionStart ?? this.questionStart,
       deadline: deadline ?? this.deadline,
       players: players is List<_i3.Player>?
           ? players
@@ -203,6 +217,10 @@ class GameTable extends _i1.Table<int?> {
       'currentQuestion',
       this,
     );
+    questionStart = _i1.ColumnDateTime(
+      'questionStart',
+      this,
+    );
     deadline = _i1.ColumnDateTime(
       'deadline',
       this,
@@ -214,8 +232,11 @@ class GameTable extends _i1.Table<int?> {
   /// Quiz this game belongs to.
   _i2.QuizTable? _quiz;
 
-  /// Current question index
+  /// Current question index. -1 if not started, quiz.questions.length if finished.
   late final _i1.ColumnInt currentQuestion;
+
+  /// Question start time.
+  late final _i1.ColumnDateTime questionStart;
 
   /// Deadline for the current question.
   late final _i1.ColumnDateTime deadline;
@@ -275,6 +296,7 @@ class GameTable extends _i1.Table<int?> {
         id,
         quizId,
         currentQuestion,
+        questionStart,
         deadline,
       ];
 

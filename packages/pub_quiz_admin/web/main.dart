@@ -4,11 +4,12 @@ import 'package:pub_quiz_admin/components/db.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 void main() {
-  const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
+  const serverUrlFromEnv = String.fromEnvironment(
+    'SERVERPOD_API_SERVER_PUBLIC_HOST',
+  );
   final serverUrl = serverUrlFromEnv.isEmpty
-      // ? 'https://api.pubquiz.space/'
       ? 'http://localhost:8088/'
-      : serverUrlFromEnv;
+      : 'https://$serverUrlFromEnv/';
 
   final client = Client(serverUrl);
 

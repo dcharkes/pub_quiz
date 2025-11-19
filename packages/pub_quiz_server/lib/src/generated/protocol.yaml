@@ -1,5 +1,6 @@
 quiz:
   - createQuiz:
   - readQuiz:
+  - readQuizzes:
   - updateQuiz:
   - deleteQuiz:

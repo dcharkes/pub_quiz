@@ -64,6 +64,15 @@ class Endpoints extends _i1.EndpointDispatch {
             params['id'],
           ),
         ),
+        'readQuizzes': _i1.MethodConnector(
+          name: 'readQuizzes',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['quiz'] as _i2.QuizEndpoint).readQuizzes(session),
+        ),
         'updateQuiz': _i1.MethodConnector(
           name: 'updateQuiz',
           params: {

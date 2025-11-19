@@ -1,8 +1,6 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
-import 'package:pub_quiz_client/pub_quiz_client.dart';
 
-import '../app.dart';
 import '../components/quiz_list.dart';
 
 class Home extends StatelessComponent {
@@ -24,7 +22,7 @@ class Home extends StatelessComponent {
           ],
         ),
       ]),
-      QuizList(quizzes: quizzes.values.toList()),
+      const QuizList(),
     ]);
   }
 }

@@ -35,6 +35,13 @@ class EndpointQuiz extends _i1.EndpointRef {
         {'id': id},
       );
 
+  _i2.Future<List<_i3.Quiz>> readQuizzes() =>
+      caller.callServerEndpoint<List<_i3.Quiz>>(
+        'quiz',
+        'readQuizzes',
+        {},
+      );
+
   _i2.Future<_i3.Quiz> updateQuiz(_i3.Quiz quiz) =>
       caller.callServerEndpoint<_i3.Quiz>(
         'quiz',

@@ -14,6 +14,10 @@ class QuizEndpoint extends Endpoint {
     );
   }
 
+  Future<List<Quiz>> readQuizzes(Session session) async {
+    return await Quiz.db.find(session);
+  }
+
   Future<Quiz> updateQuiz(Session session, Quiz quiz) async {
     return await Quiz.db.updateRow(session, quiz);
   }

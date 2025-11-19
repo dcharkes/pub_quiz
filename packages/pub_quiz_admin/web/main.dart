@@ -1,13 +1,20 @@
-// The entrypoint for the **client** environment.
-//
-// This file is compiled to javascript and executed in the browser.
-
-// Client-specific jaspr import.
 import 'package:jaspr/browser.dart';
-// Imports the [App] component.
 import 'package:pub_quiz_admin/app.dart';
+import 'package:pub_quiz_admin/components/db.dart';
+import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 void main() {
-  // Attaches the [App] component to the <body> of the page.
-  runApp(const App());
+  const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
+  final serverUrl = serverUrlFromEnv.isEmpty
+      ? 'http://localhost:8088/'
+      : serverUrlFromEnv;
+
+  final client = Client(serverUrl);
+
+  runApp(
+    DbProvider(
+      child: const App(),
+      db: client,
+    ),
+  );
 }

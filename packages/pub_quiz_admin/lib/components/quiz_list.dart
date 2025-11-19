@@ -3,10 +3,30 @@ import 'package:jaspr_router/jaspr_router.dart';
 
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
-class QuizList extends StatelessComponent {
-  const QuizList({super.key, required this.quizzes});
+import 'db.dart';
 
-  final List<Quiz> quizzes;
+class QuizList extends StatefulComponent {
+  const QuizList({super.key});
+
+  @override
+  State createState() => QuizListState();
+}
+
+class QuizListState extends State<QuizList> {
+  List<Quiz> quizzes = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    DbProvider.of(context).quiz.readQuizzes().then((q) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        quizzes = q;
+      });
+    });
+  }
 
   @override
   Component build(BuildContext context) {

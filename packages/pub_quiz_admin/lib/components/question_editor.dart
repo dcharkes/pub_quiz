@@ -12,25 +12,6 @@ class QuestionEditor extends StatefulComponent {
 }
 
 class _QuizQuestionEditorState extends State<QuestionEditor> {
-  void _onTitleChange(String newTitle) {
-    setState(() {
-      component.question.question = newTitle;
-    });
-  }
-
-  void _onAnswerTextChange(int index, String newText) {
-    print(index);
-    setState(() {
-      component.question.answers[index].text = newText;
-    });
-  }
-
-  void _onAnswerCorrectChange(int index, bool isCorrect) {
-    setState(() {
-      component.question.answers[index].correct = isCorrect;
-    });
-  }
-
   @override
   Component build(BuildContext context) {
     return div(
@@ -48,7 +29,9 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
                 'placeholder': 'Enter your question',
               },
               onInput: (value) {
-                _onTitleChange(value as String);
+                setState(() {
+                  component.question.question = value as String;
+                });
               },
             ),
           ],
@@ -71,7 +54,9 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
                       'placeholder': 'Answer ${index + 1}',
                     },
                     onInput: (value) {
-                      _onAnswerTextChange(index, value as String);
+                      setState(() {
+                        answer.text = value as String;
+                      });
                     },
                   ),
                   div(
@@ -82,7 +67,9 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
                           type: InputType.checkbox,
                           checked: answer.correct,
                           onInput: (value) {
-                            _onAnswerCorrectChange(index, value as bool);
+                            setState(() {
+                              answer.correct = value as bool;
+                            });
                           },
                         ),
                         text('Correct'),

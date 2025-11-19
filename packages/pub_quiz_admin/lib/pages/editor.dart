@@ -1,73 +1,131 @@
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_router/jaspr_router.dart';
 
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
+import '../components/db.dart';
 import '../components/question_editor.dart';
 
 class QuizEditor extends StatefulComponent {
-  const QuizEditor({super.key, this.quiz});
+  const QuizEditor({super.key, this.quizId});
 
-  final Quiz? quiz;
+  final int? quizId;
 
   @override
   State<QuizEditor> createState() => _CounterState();
 }
 
 class _CounterState extends State<QuizEditor> {
-  late final _quizCache = Quiz(title: '', questions: []);
+  Quiz? _quiz;
 
-  Quiz get quiz => component.quiz ?? _quizCache;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadQuiz();
+  }
+
+  void _loadQuiz() async {
+    final quizId = component.quizId;
+    if (quizId != null) {
+      final quiz = await DbProvider.of(context).quiz.readQuiz(quizId);
+      if (mounted) {
+        setState(() {
+          _quiz = quiz;
+        });
+      }
+    }
+    if (_quiz == null) {
+      setState(() {
+        _quiz = Quiz(title: '', questions: []);
+      });
+    }
+  }
 
   @override
   Component build(BuildContext context) {
     return section([
       h1(classes: 'page-header', [text('Quiz Editor')]),
-      div(
-        classes: 'form-group',
-        [
-          label(htmlFor: 'quiz-title', [text('Quiz Title')]),
-          input(
-            id: 'quiz-title',
-            type: InputType.text,
-            value: quiz.title,
-            attributes: {
-              'placeholder': 'Enter quiz title',
-            },
-            onInput: (value) {
+      if (_quiz != null)
+        div([
+          div(
+            classes: 'form-group',
+            [
+              label(htmlFor: 'quiz-title', [text('Quiz Title')]),
+              input(
+                id: 'quiz-title',
+                type: InputType.text,
+                value: _quiz!.title,
+                attributes: {
+                  'placeholder': 'Enter quiz title',
+                },
+                onInput: (value) {
+                  setState(() {
+                    _quiz!.title = value as String;
+                  });
+                },
+              ),
+            ],
+          ),
+          div(
+            classes: 'question-list',
+            [
+              for (final question in _quiz!.questions)
+                QuestionEditor(question: question),
+            ],
+          ),
+          button(
+            onClick: () {
               setState(() {
-                quiz.title = value as String;
+                _quiz!.questions.add(
+                  Question(
+                    question: '',
+                    answers: List.generate(
+                      4,
+                      (index) => Answer(text: '', correct: false),
+                    ),
+                  ),
+                );
               });
             },
+            classes: 'add-question-button',
+            [
+              i(classes: 'material-icons md-18', [text('add')]),
+              text('Add Question'),
+            ],
           ),
-        ],
-      ),
-      div(
-        classes: 'question-list',
-        [
-          for (final question in quiz.questions)
-            QuestionEditor(question: question),
-        ],
-      ),
-      button(
-        onClick: () {
-          setState(() {
-            quiz.questions.add(
-              Question(
-                question: '',
-                answers: List.generate(
-                  4,
-                  (index) => Answer(text: '', correct: false),
-                ),
-              ),
-            );
-          });
-        },
-        classes: 'add-question-button',
-        [
-          i(classes: 'material-icons md-18', [text('add')]),
-          text('Add Question'),
-        ],
-      ),
+          button(
+            onClick: () {
+              final db = DbProvider.of(context).quiz;
+              final newQuiz = _quiz!.id == null
+                  ? db.createQuiz(_quiz!)
+                  : db.updateQuiz(_quiz!);
+              newQuiz.then((quiz) {
+                print(quiz.id);
+                if (mounted) {
+                  setState(() {
+                    _quiz = quiz;
+                  });
+                }
+                Router.of(context).back();
+              });
+            },
+            classes: 'save-button',
+            [
+              i(classes: 'material-icons md-18', [text('save')]),
+              text('Save Quiz'),
+            ],
+          ),
+          button(
+            onClick: () {
+              Router.of(context).back();
+            },
+            classes: 'cancel-button',
+            [
+              i(classes: 'material-icons md-18', [text('cancel')]),
+              text('Cancel'),
+            ],
+          ),
+        ]),
     ]);
   }
 }

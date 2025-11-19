@@ -14,6 +14,7 @@ import 'package:serverpod/protocol.dart' as _i2;
 import 'answer.dart' as _i3;
 import 'question.dart' as _i4;
 import 'quiz.dart' as _i5;
+import 'package:pub_quiz_server/src/generated/quiz.dart' as _i6;
 export 'answer.dart';
 export 'question.dart';
 export 'quiz.dart';
@@ -104,6 +105,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<_i4.Question>) {
       return (data as List).map((e) => deserialize<_i4.Question>(e)).toList()
           as T;
+    }
+    if (t == List<_i6.Quiz>) {
+      return (data as List).map((e) => deserialize<_i6.Quiz>(e)).toList() as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);

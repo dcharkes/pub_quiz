@@ -12,10 +12,10 @@ class QuizEditor extends StatefulComponent {
   final int? quizId;
 
   @override
-  State<QuizEditor> createState() => _CounterState();
+  State<QuizEditor> createState() => _QuizEditorState();
 }
 
-class _CounterState extends State<QuizEditor> {
+class _QuizEditorState extends State<QuizEditor> {
   Quiz? _quiz;
 
   @override

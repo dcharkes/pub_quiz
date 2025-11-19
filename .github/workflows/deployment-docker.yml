@@ -160,6 +160,7 @@ jobs:
           SERVERPOD_MAX_REQUEST_SIZE: ${{ secrets.SERVERPOD_MAX_REQUEST_SIZE }}
           # The token used to connect with insights must be at least 20 chars
           SERVERPOD_SERVICE_SECRET: ${{ secrets.SERVERPOD_SERVICE_SECRET }}
+          ADMIN_URL: ${{ secrets.ADMIN_URL }}
 
       - name: cleanup
         run: rm -rf ~/.ssh

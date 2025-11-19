@@ -106,6 +106,19 @@ services:
         condition: service_healthy
     networks:
       - serverpod-network
+  admin-frontend:
+    image: nginx:alpine
+    restart: on-failure
+    volumes:
+      - /var/www/pub_quiz_admin:/usr/share/nginx/html:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.admin.rule=Host(`${ADMIN_URL}`)" 
+      - "traefik.http.routers.admin.entrypoints=websecure"
+      - "traefik.http.routers.admin.tls.certresolver=myresolver"
+      - "traefik.http.services.admin.loadbalancer.server.port=80"
+    networks:
+      - serverpod-network
 
 networks:
   serverpod-network:

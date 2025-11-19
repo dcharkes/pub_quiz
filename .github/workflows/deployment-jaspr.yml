@@ -1,0 +1,60 @@
+name: Deploy Jaspr Admin App
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/pub_quiz_admin/**"
+      - ".github/workflows/deployment-jaspr.yml"
+  workflow_dispatch:
+
+jobs:
+  build-jaspr-app:
+    name: Build Jaspr App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/pub_quiz_admin
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+      - name: Install Jaspr CLI
+        run: dart pub global activate jaspr_cli
+      - name: Install dependencies
+        run: jaspr pub get
+      - name: Build Jaspr app
+        run: jaspr build --dart-define=SERVER_URL=${{ secrets.ADMIN_URL }}
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-app-build
+          path: packages/pub_quiz_admin/build/web
+
+  deploy-jaspr-app:
+    needs: build-jaspr-app
+    name: Deploy Jaspr App to Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: admin-app-build
+          path: build/web
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy files to server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /var/www/pub_quiz_admin && rm -rf /var/www/pub_quiz_admin/*"
+          
+          scp -r build/web/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/pub_quiz_admin/
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -rf ~/.ssh

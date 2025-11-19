@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
-Future<PlayerClient> connectFakeClient() async {
+Future<PlayerClient> connectFakeClient(String gameId) async {
   return FakeClient(
     fakeQuiz,
     Stream<void>.periodic(const Duration(seconds: 10)),
@@ -10,6 +10,7 @@ Future<PlayerClient> connectFakeClient() async {
 }
 
 abstract interface class PlayerClient {
+  QuizDescription get quizDescription;
   Stream<PlayerQuestion> get questionsStream;
 
   void recordAnswer(int questionId, int answerId);
@@ -22,8 +23,21 @@ class PlayerQuestion {
   PlayerQuestion({required this.question, required this.timeout});
 }
 
+/// Player-relevant projection of a quiz.
+class QuizDescription {
+  final String title;
+
+  QuizDescription({required this.title});
+
+  static QuizDescription fromQuiz(Quiz quiz) {
+    return QuizDescription(title: quiz.title);
+  }
+}
+
 class FakeClient implements PlayerClient {
   late final StreamSubscription<void> _clicksSubscription;
+  @override
+  final QuizDescription quizDescription;
   final Duration _interval;
 
   /// The game has not started.
@@ -38,7 +52,8 @@ class FakeClient implements PlayerClient {
     Quiz quiz,
     Stream<void> clicks, {
     Duration interval = const Duration(seconds: 30),
-  }) : questions = quiz.questions!,
+  }) : quizDescription = QuizDescription.fromQuiz(quiz),
+       questions = quiz.questions!,
        _interval = interval {
     _clicksSubscription = clicks.listen((_) => _onClick());
   }

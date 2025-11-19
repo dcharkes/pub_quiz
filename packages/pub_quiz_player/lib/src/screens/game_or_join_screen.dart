@@ -78,9 +78,7 @@ class _GameOrJoinScreenState extends State<GameOrJoinScreen> {
                 savedPlayerName != null &&
                 savedPlayerName.isNotEmpty) {
               return GameScreen(
-                gameId: widget.gameId,
-                playerName: savedPlayerName,
-                firestore: widget.firestore,
+                client: client,
               );
             }
 

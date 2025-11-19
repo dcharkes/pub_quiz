@@ -45,8 +45,8 @@ void main() {
     await tester.pumpAndSettle();
 
     // 7. Verify we are on GameScreen
-    expect(find.text('Welcome, Player1!'), findsOneWidget);
-    expect(find.text('Game ID: test-game'), findsOneWidget);
+    expect(find.text('The game will start soon...'), findsOneWidget);
+    // expect(find.text('Game ID: test-game'), findsOneWidget); // Game ID is not shown in new UI
 
     // 8. Verify Persistence
     expect(persistenceService.savedGameId, 'test-game');
@@ -64,6 +64,6 @@ void main() {
     await tester.pumpAndSettle();
 
     // 10. Verify we are redirected straight to GameScreen
-    expect(find.text('Welcome, Player1!'), findsOneWidget);
+    expect(find.text('The game will start soon...'), findsOneWidget);
   });
 }

@@ -11,28 +11,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:pub_quiz_client/src/protocol/greeting.dart' as _i3;
-import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i4;
-import 'package:pub_quiz_client/src/protocol/question.dart' as _i5;
-import 'protocol.dart' as _i6;
-
-/// This is an example endpoint that returns a greeting message through
-/// its [hello] method.
-/// {@category Endpoint}
-class EndpointGreeting extends _i1.EndpointRef {
-  EndpointGreeting(_i1.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'greeting';
-
-  /// Returns a personalized greeting message: "Hello {name}".
-  _i2.Future<_i3.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i3.Greeting>(
-        'greeting',
-        'hello',
-        {'name': name},
-      );
-}
+import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i3;
+import 'package:pub_quiz_client/src/protocol/question.dart' as _i4;
+import 'protocol.dart' as _i5;
 
 /// {@category Endpoint}
 class EndpointQuiz extends _i1.EndpointRef {
@@ -41,22 +22,22 @@ class EndpointQuiz extends _i1.EndpointRef {
   @override
   String get name => 'quiz';
 
-  _i2.Future<_i4.Quiz> createQuiz(_i4.Quiz quiz) =>
-      caller.callServerEndpoint<_i4.Quiz>(
+  _i2.Future<_i3.Quiz> createQuiz(_i3.Quiz quiz) =>
+      caller.callServerEndpoint<_i3.Quiz>(
         'quiz',
         'createQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<_i5.Question> createQuestion(_i5.Question question) =>
-      caller.callServerEndpoint<_i5.Question>(
+  _i2.Future<_i4.Question> createQuestion(_i4.Question question) =>
+      caller.callServerEndpoint<_i4.Question>(
         'quiz',
         'createQuestion',
         {'question': question},
       );
 
-  _i2.Future<_i4.Quiz?> loadQuiz(int id) =>
-      caller.callServerEndpoint<_i4.Quiz?>(
+  _i2.Future<_i3.Quiz?> loadQuiz(int id) =>
+      caller.callServerEndpoint<_i3.Quiz?>(
         'quiz',
         'loadQuiz',
         {'id': id},
@@ -79,7 +60,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i6.Protocol(),
+          _i5.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -89,19 +70,13 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
-    greeting = EndpointGreeting(this);
     quiz = EndpointQuiz(this);
   }
-
-  late final EndpointGreeting greeting;
 
   late final EndpointQuiz quiz;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {
-        'greeting': greeting,
-        'quiz': quiz,
-      };
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {'quiz': quiz};
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {};

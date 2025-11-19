@@ -14,8 +14,8 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^17.0.0
-  pub_quiz_shared:
-    path: ../pub_quiz_shared
+  pub_quiz_client: any
+  pub_quiz_widgets: any
   serverpod_flutter: ^2.9.2
   shared_preferences: ^2.5.3
 

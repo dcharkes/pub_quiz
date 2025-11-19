@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pub_quiz_widgets/pub_quiz_widgets.dart';
 import '../services/persistence_service.dart';
 
 class JoinGameScreen extends StatefulWidget {
@@ -36,6 +37,8 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const PubQuizLogo(),
+              const SizedBox(height: 32),
               TextField(
                 controller: _controller,
                 decoration: const InputDecoration(

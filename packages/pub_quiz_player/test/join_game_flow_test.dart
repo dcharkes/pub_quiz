@@ -49,7 +49,8 @@ void main() {
     expect(persistenceService.savedPlayerName, 'Player1');
 
     // 9. Restart App (Simulate Refresh)
-    // We need to rebuild the app with the same persistence service (which now has data)
+    // We need to rebuild the app with the same persistence service
+    // (which now has data)
     await tester.pumpWidget(
       MyApp(
         persistenceService: persistenceService,

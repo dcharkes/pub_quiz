@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:pub_quiz_widgets/pub_quiz_widgets.dart';
 
 import 'firebase_options.dart';
 import 'router.dart';
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Pub Quiz Player',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      theme: pubQuizThemeData,
       routerConfig: createRouter(persistenceService, firestore: firestore),
     );
   }

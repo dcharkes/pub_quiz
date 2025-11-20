@@ -37,7 +37,7 @@ class PlayerClient {
   final int _gameId;
   final QuizDescription quizDescription;
   final int totalQuestions;
-  late final int _playerId;
+  late final int playerId;
 
   PlayerClient(
     this._endpoint,
@@ -51,50 +51,26 @@ class PlayerClient {
   }
 
   Future<void> join(String name) async {
-    _playerId = await _endpoint.joinGame(_gameId, name);
+    playerId = await _endpoint.joinGame(_gameId, name);
 
   }
 
   Future<void> recordAnswer(int questionId, int answerId) async {
     await _endpoint.recordAnswer(
-      _playerId,
+      playerId,
       questionId,
       answerId,
       DateTime.now(),
     );
   }
 
-  Future<GameResults> getResults() async {
-    final result = await _endpoint.getResults(_gameId);
-    final player = result.scores.firstWhere(
-      (p) => p.id == _playerId,
-      orElse: () => Player(
-        gameId: _gameId,
-        name: '',
-        score: 0,
-      ),
-    );
-    return GameResults(
-      correctAnswers: player.score,
-      totalAnswers: totalQuestions,
-    );
-  }
+  Future<GameResult> getResults() => _endpoint.getResults(_gameId);
 
   void dispose() {
     if (_endpoint is FakeEndpointPlayer) {
       _endpoint.dispose();
     }
   }
-}
-
-class GameResults {
-  final int correctAnswers;
-  final int totalAnswers;
-
-  GameResults({
-    required this.correctAnswers,
-    required this.totalAnswers,
-  });
 }
 
 /// Player-relevant projection of a quiz.

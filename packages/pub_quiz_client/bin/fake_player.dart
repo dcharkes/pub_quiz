@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:args/args.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
@@ -13,7 +14,7 @@ final parser = ArgParser()
 
 void main(List<String> args) async {
   final argResults = parser.parse(args);
-  final gameId = int.tryParse(argResults.option('game_id')!);
+  final gameId = int.tryParse(argResults.option('game_id') ?? '');
   final server = argResults.option('server');
   final name = argResults.option('name')!;
   if (gameId == null || server == null) {
@@ -28,7 +29,19 @@ void main(List<String> args) async {
   final playerId = await client.player.joinGame(gameId, name);
   print('Joined the game ${game.quiz!.title} with ID $playerId');
 
+  final random = Random();
   await for (final question in client.player.getQuestions(gameId)) {
-    print('Got question: ');
+    print(question.question.question);
+    for (final answer in question.question.answers) {
+      print('- ${answer.text}');
+    }
+    await Future<void>.delayed(const Duration(seconds: 5));
+    final answerIndex = random.nextInt(question.question.answers.length);
+    await client.player.recordAnswer(
+      playerId,
+      question.index,
+      answerIndex,
+      DateTime.now(),
+    );
   }
 }

@@ -18,7 +18,11 @@ class QuizEndpoint extends Endpoint {
   }
 
   Future<List<Quiz>> readQuizzes(Session session) async {
-    return await Quiz.db.find(session);
+    return await Quiz.db.find(
+      session,
+      orderBy: (t) => t.id,
+      orderDescending: true,
+    );
   }
 
   Future<Quiz> updateQuiz(Session session, Quiz quiz) async {

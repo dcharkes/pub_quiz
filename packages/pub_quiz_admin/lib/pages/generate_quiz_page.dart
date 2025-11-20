@@ -30,7 +30,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
         topic: _topic,
       );
       if (mounted) {
-        await Router.of(context).push('/edit/${quiz.id}');
+        await Router.of(context).push('/');
       }
     } catch (e) {
       if (mounted) {
@@ -52,6 +52,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
           input(
             type: InputType.text,
             value: _topic,
+            disabled: _isLoading,
             onInput: (value) {
               _topic = value as String;
             },
@@ -61,6 +62,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
           label([text('Style')]),
           select(
             value: _style,
+            disabled: _isLoading,
             onChange: (value) {
               setState(() {
                 _style = value.single;
@@ -78,6 +80,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
           label([text('Number of Questions')]),
           select(
             value: _numberOfQuestions.toString(),
+            disabled: _isLoading,
             onChange: (value) {
               setState(() {
                 _numberOfQuestions = int.parse(value.single);
@@ -97,9 +100,10 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
               onClick: _generateQuiz,
               disabled: _isLoading,
               [
-                if (_isLoading)
-                  span(classes: 'loading-indicator', [])
-                else ...[
+                if (_isLoading) ...[
+                  span(classes: 'loading-indicator', []),
+                  text('Generating...'),
+                ] else ...[
                   i(classes: 'material-icons md-18', [text('auto_awesome')]),
                   text('Generate'),
                 ],

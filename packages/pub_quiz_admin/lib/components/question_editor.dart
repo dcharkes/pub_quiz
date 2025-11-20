@@ -73,7 +73,14 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
                           checked: answer.correct,
                           onInput: (value) {
                             setState(() {
-                              answer.correct = value as bool;
+                              final isCorrect = value as bool;
+                              if (isCorrect) {
+                                for (final otherAnswer
+                                    in component.question.answers) {
+                                  otherAnswer.correct = false;
+                                }
+                              }
+                              answer.correct = isCorrect;
                             });
                           },
                         ),

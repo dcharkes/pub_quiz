@@ -7,6 +7,7 @@ import 'package:pub_quiz_widgets/pub_quiz_widgets.dart';
 
 import 'client_provider.dart';
 import 'code_screen.dart';
+import 'game_over.dart';
 import 'question_screen.dart';
 import 'standings_screen.dart';
 import 'start_screen.dart';
@@ -37,9 +38,9 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/game/:pin/standings',
+      path: '/game/:pin/over',
       builder: (context, state) {
-        return StandingsScreen(pin: int.parse(state.pathParameters['pin']!));
+        return GameOver(gameId: int.parse(state.pathParameters['pin']!));
       },
     ),
     GoRoute(

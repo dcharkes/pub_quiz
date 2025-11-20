@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 import 'client_provider.dart';
+import 'standings_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   const QuestionScreen({
@@ -20,7 +21,8 @@ class QuestionScreen extends StatefulWidget {
 
 class _QuestionScreenState extends State<QuestionScreen> {
   int currentQuestion = 0;
-  final _duration = const Duration(seconds: 5);
+  final maxTime = 30;
+  int timeLeft = 0;
   Game? _game;
   bool _showAnswer = false;
 
@@ -40,28 +42,38 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _loadQuestion(0);
   }
 
+  Timer? _timer;
+
   void _loadQuestion(int questionId) async {
     unawaited(
       ClientProvider.of(
         context,
-      ).game.setQuestion(widget.pin, questionId, _duration),
+      ).game.setQuestion(widget.pin, questionId, Duration(seconds: maxTime)),
     );
     setState(() {
       _showAnswer = false;
       currentQuestion = questionId;
+      timeLeft = maxTime;
     });
-    Future.delayed(_duration, () {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
-        _showAnswer = true;
+        timeLeft = timeLeft - 1;
       });
-      Future.delayed(_duration, () {
-        if (currentQuestion < _game!.quiz!.questions.length - 1) {
-          _loadQuestion(questionId + 1);
-        } else {
-          context.go('/game/${widget.pin}/standings');
-        }
-      });
+      if (timeLeft == 0) {
+        _timer?.cancel();
+        setState(() {
+          _showAnswer = true;
+        });
+      }
     });
+  }
+
+  void _handleNext() {
+    if (currentQuestion < _game!.quiz!.questions.length - 1) {
+      _loadQuestion(currentQuestion + 1);
+    } else {
+      context.go('/game/${_game!.id!}/over');
+    }
   }
 
   @override
@@ -70,8 +82,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
         ? QuestionWidget(
             question: _game!.quiz!.questions[currentQuestion],
             quizTitle: _game!.quiz!.title,
-            timeLeft: 10,
-            // TODO: _showAnswer
+            timeLeft: timeLeft,
+            showAnswer: _showAnswer,
+            maxTime: maxTime,
+            gameId: _game!.id!,
+            onNext: _handleNext,
           )
         : const SizedBox();
   }
@@ -81,12 +96,20 @@ class QuestionWidget extends StatelessWidget {
   final Question question;
   final String quizTitle;
   final int timeLeft;
+  final int maxTime;
+  final bool showAnswer;
+  final int gameId;
+  final VoidCallback onNext;
 
   const QuestionWidget({
     super.key,
     required this.question,
     required this.quizTitle,
     required this.timeLeft,
+    required this.showAnswer,
+    required this.gameId,
+    required this.maxTime,
+    required this.onNext,
   });
 
   @override
@@ -106,9 +129,7 @@ class QuestionWidget extends StatelessWidget {
                 children: [
                   Expanded(
                     child: LinearProgressIndicator(
-                      value:
-                          timeLeft /
-                          30.0, // Assuming 10s max for now, or pass maxTime
+                      value: timeLeft / maxTime,
                       minHeight: 8,
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -123,7 +144,12 @@ class QuestionWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 32),
-
+              if (showAnswer) ...[
+                Standings(
+                  pin: gameId,
+                ),
+                FilledButton(onPressed: onNext, child: const Text('Next')),
+              ],
               // Question Card
               Expanded(
                 child: Center(
@@ -164,6 +190,9 @@ class QuestionWidget extends StatelessWidget {
                     child: FilledButton(
                       onPressed: () => {},
                       style: FilledButton.styleFrom(
+                        backgroundColor: showAnswer
+                            ? (answer.correct ? Colors.green : Colors.red)
+                            : null,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

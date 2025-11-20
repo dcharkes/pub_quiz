@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 import 'client_provider.dart';
@@ -19,7 +20,7 @@ class QuestionScreen extends StatefulWidget {
 
 class _QuestionScreenState extends State<QuestionScreen> {
   int currentQuestion = 0;
-  final _duration = const Duration(seconds: 30);
+  final _duration = const Duration(seconds: 5);
   Game? _game;
   bool _showAnswer = false;
 
@@ -41,11 +42,24 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   void _loadQuestion(int questionId) async {
     unawaited(
-      ClientProvider.of(context).game.setQuestion(widget.pin, 0, _duration),
+      ClientProvider.of(
+        context,
+      ).game.setQuestion(widget.pin, questionId, _duration),
     );
+    setState(() {
+      _showAnswer = false;
+      currentQuestion = questionId;
+    });
     Future.delayed(_duration, () {
       setState(() {
         _showAnswer = true;
+      });
+      Future.delayed(_duration, () {
+        if (currentQuestion < _game!.quiz!.questions.length - 1) {
+          _loadQuestion(questionId + 1);
+        } else {
+          context.go('/game/${widget.pin}/standings');
+        }
       });
     });
   }

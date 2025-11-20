@@ -10,7 +10,7 @@ class GenerateQuizPage extends StatefulComponent {
 }
 
 class _GenerateQuizPageState extends State<GenerateQuizPage> {
-  int _numberOfQuestions = 10;
+  int _numberOfQuestions = 5;
   String _style = 'Funny';
   String _topic = 'A hackathon with Dart, Flutter, and Jaspr';
   bool _isLoading = false;
@@ -24,7 +24,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
 
     try {
       final db = DbProvider.of(context);
-      final quiz = await db.quiz.generateQuiz(
+      await db.quiz.generateQuiz(
         numberOfQuestions: _numberOfQuestions,
         style: _style,
         topic: _topic,

@@ -28,7 +28,11 @@ class GameEndpoint extends Endpoint {
     int questionIndex,
     Duration duration,
   ) async {
-    final game = await Game.db.findById(session, gameId);
+    final game = await Game.db.findById(
+      session,
+      gameId,
+      include: Game.include(quiz: Quiz.include()),
+    );
     if (game == null) {
       throw Exception('Game not found');
     }

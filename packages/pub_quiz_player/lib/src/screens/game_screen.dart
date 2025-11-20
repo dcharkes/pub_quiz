@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:pub_quiz_client/pub_quiz_client.dart';
 import 'package:pub_quiz_widgets/pub_quiz_widgets.dart';
 import '../services/fake_player_client.dart';
 import 'game_over_screen.dart';
@@ -18,8 +19,8 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  StreamSubscription<PlayerQuestion>? _subscription;
-  PlayerQuestion? _currentQuestion;
+  StreamSubscription<LiveQuestion>? _subscription;
+  LiveQuestion? _currentQuestion;
   Timer? _timer;
   int _timeLeft = 0;
   bool _hasAnswered = false;
@@ -41,11 +42,11 @@ class _GameScreenState extends State<GameScreen> {
     super.dispose();
   }
 
-  void _onQuestion(PlayerQuestion question) {
+  void _onQuestion(LiveQuestion question) {
     setState(() {
       _currentQuestion = question;
       _hasAnswered = false;
-      _timeLeft = question.timeout.difference(DateTime.now()).inSeconds;
+      _timeLeft = question.deadline.difference(DateTime.now()).inSeconds;
       if (_timeLeft < 0) _timeLeft = 0;
     });
     _startTimer();
@@ -64,7 +65,7 @@ class _GameScreenState extends State<GameScreen> {
       setState(() {
         final now = DateTime.now();
         if (_currentQuestion != null) {
-          _timeLeft = _currentQuestion!.timeout.difference(now).inSeconds;
+          _timeLeft = _currentQuestion!.deadline.difference(now).inSeconds;
         }
         if (_timeLeft <= 0) {
           _timeLeft = 0;

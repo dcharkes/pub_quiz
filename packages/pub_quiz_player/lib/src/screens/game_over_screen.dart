@@ -27,7 +27,8 @@ class GameOverScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'You scored ${results.correctAnswers} out of ${results.totalAnswers}',
+              'You scored ${results.correctAnswers} out of '
+              '${results.totalAnswers}',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ],

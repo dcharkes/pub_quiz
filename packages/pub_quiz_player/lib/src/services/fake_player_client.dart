@@ -7,23 +7,72 @@ Stream<void> nowAndLater(Duration duration) async* {
 }
 
 Future<PlayerClient> connectFakeClient(String gameId) async {
-  return FakeClient(
+  final endpoint = FakeEndpointPlayer(
     fakeQuiz,
     nowAndLater(const Duration(seconds: 10)),
     interval: const Duration(seconds: 9),
   );
+  return PlayerClient(
+    endpoint,
+    1, // fake gameId
+    quizDescription: QuizDescription.fromQuiz(fakeQuiz),
+    totalQuestions: fakeQuiz.questions.length,
+  );
 }
 
-abstract interface class PlayerClient {
-  QuizDescription get quizDescription;
-  Stream<PlayerQuestion> get questionsStream;
-  Future<GameResults> getResults();
+class PlayerClient {
+  final EndpointPlayer _endpoint;
+  final int _gameId;
+  final QuizDescription quizDescription;
+  final int totalQuestions;
+  int? _playerId;
 
-  Future<void> recordAnswer(int questionId, int answerId);
+  PlayerClient(
+    this._endpoint,
+    this._gameId, {
+    required this.quizDescription,
+    required this.totalQuestions,
+  });
 
-  Future<void> join(String name);
+  Stream<LiveQuestion> get questionsStream {
+    return _endpoint.getQuestions(_gameId);
+  }
 
-  void dispose();
+  Future<void> join(String name) async {
+    _playerId = await _endpoint.joinGame(_gameId, name);
+  }
+
+  Future<void> recordAnswer(int questionId, int answerId) async {
+    if (_playerId == null) return;
+    await _endpoint.recordAnswer(
+      _playerId!,
+      questionId,
+      answerId,
+      DateTime.now(),
+    );
+  }
+
+  Future<GameResults> getResults() async {
+    final result = await _endpoint.getResults(_gameId);
+    final player = result.scores.firstWhere(
+      (p) => p.id == _playerId,
+      orElse: () => Player(
+        gameId: _gameId,
+        name: '',
+        score: 0,
+      ),
+    );
+    return GameResults(
+      correctAnswers: player.score,
+      totalAnswers: totalQuestions,
+    );
+  }
+
+  void dispose() {
+    if (_endpoint is FakeEndpointPlayer) {
+      _endpoint.dispose();
+    }
+  }
 }
 
 class GameResults {
@@ -33,39 +82,6 @@ class GameResults {
   GameResults({
     required this.correctAnswers,
     required this.totalAnswers,
-  });
-}
-
-class PlayerQuestion {
-  final Question question;
-  final int index;
-  final DateTime timeout;
-  final List<PlayerAnswer> answers;
-
-  PlayerQuestion({
-    required this.question,
-    required this.timeout,
-    required this.index,
-  }) : answers = question.answers.indexed
-           .map<PlayerAnswer>(
-             (e) => PlayerAnswer(
-               answer: e.$2,
-               questionId: index,
-               answerId: e.$1,
-             ),
-           )
-           .toList();
-}
-
-class PlayerAnswer {
-  final Answer answer;
-  final int questionId;
-  final int answerId;
-
-  PlayerAnswer({
-    required this.answer,
-    required this.questionId,
-    required this.answerId,
   });
 }
 
@@ -80,69 +96,98 @@ class QuizDescription {
   }
 }
 
-class FakeClient implements PlayerClient {
+class FakeEndpointPlayer implements EndpointPlayer {
   late final StreamSubscription<void> _clicksSubscription;
-  @override
-  final QuizDescription quizDescription;
   final Duration _interval;
+  final Quiz _quiz;
 
   /// The game has not started.
   var _currentQuestion = -1;
-  final List<Question> questions;
-  final _questionController = StreamController<PlayerQuestion>();
+  final _questionController = StreamController<LiveQuestion>();
 
-  @override
-  Stream<PlayerQuestion> get questionsStream => _questionController.stream;
-
-  FakeClient(
-    Quiz quiz,
+  FakeEndpointPlayer(
+    this._quiz,
     Stream<void> clicks, {
     Duration interval = const Duration(seconds: 30),
-  }) : quizDescription = QuizDescription.fromQuiz(quiz),
-       questions = quiz.questions,
-       _interval = interval {
+  }) : _interval = interval {
     _clicksSubscription = clicks.listen((_) => _onClick());
   }
 
   void _onClick() {
     _currentQuestion++;
-    if (_currentQuestion >= questions.length) {
+    if (_currentQuestion >= _quiz.questions.length) {
       _clicksSubscription.cancel();
       _questionController.close();
       return;
     }
     _questionController.add(
-      PlayerQuestion(
-        question: questions[_currentQuestion],
-        timeout: DateTime.now().add(_interval),
+      LiveQuestion(
+        question: _quiz.questions[_currentQuestion],
         index: _currentQuestion,
+        startedAt: DateTime.now(),
+        deadline: DateTime.now().add(_interval),
       ),
     );
   }
 
   int _correctAnswers = 0;
-  int _totalAnswers = 0;
 
   @override
-  Future<void> recordAnswer(int questionId, int answerId) async {
-    _totalAnswers++;
-    if (questions[questionId].answers[answerId].correct) {
-      _correctAnswers++;
-    }
+  Future<int> joinGame(int gameId, String name) async {
+    return 123; // Fake player ID
   }
 
   @override
-  Future<GameResults> getResults() async {
-    return GameResults(
-      correctAnswers: _correctAnswers,
-      totalAnswers: _totalAnswers,
+  Future<int> recordAnswer(
+    int playerId,
+    int questionIndex,
+    int answerIndex,
+    DateTime answerTime,
+  ) async {
+    if (_quiz.questions[questionIndex].answers[answerIndex].correct) {
+      _correctAnswers++;
+    }
+    return _correctAnswers;
+  }
+
+  @override
+  Stream<LiveQuestion> getQuestions(int gameId) => _questionController.stream;
+
+  @override
+  Future<GameResult> getResults(int gameId) async {
+    return GameResult(
+      scores: [
+        Player(
+          id: 123,
+          gameId: gameId,
+          name: 'Player',
+          score: _correctAnswers,
+        ),
+      ],
     );
   }
 
   @override
-  Future<void> join(String name) async {}
+  EndpointCaller get caller => throw UnimplementedError();
 
   @override
+  String get name => 'player';
+
+  @override
+  ServerpodClientShared get client => throw UnimplementedError();
+
+  @override
+  set client(ServerpodClientShared value) {}
+
+  @override
+  Stream<SerializableModel> get stream => throw UnimplementedError();
+
+  @override
+  void resetStream() {}
+
+  @override
+  Future<void> sendStreamMessage(SerializableModel message) async {}
+
   void dispose() {
     _clicksSubscription.cancel();
     _questionController.close();

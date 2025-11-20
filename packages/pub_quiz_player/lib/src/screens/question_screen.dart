@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../services/fake_player_client.dart';
+import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 class QuestionScreen extends StatelessWidget {
-  final PlayerQuestion question;
+  final LiveQuestion question;
   final String quizTitle;
   final int timeLeft;
   final ValueChanged<int> onAnswerSelected;
@@ -17,7 +17,7 @@ class QuestionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final answers = question.answers;
+    final answers = question.question.answers;
 
     return Scaffold(
       appBar: AppBar(title: Text(quizTitle)),
@@ -88,7 +88,7 @@ class QuestionScreen extends StatelessWidget {
                   return SizedBox(
                     height: 64, // Fixed height for better touch targets
                     child: FilledButton(
-                      onPressed: () => onAnswerSelected(answer.answerId),
+                      onPressed: () => onAnswerSelected(index),
                       style: FilledButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -98,7 +98,7 @@ class QuestionScreen extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      child: Text(answer.answer.text),
+                      child: Text(answer.text),
                     ),
                   );
                 },

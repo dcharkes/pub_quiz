@@ -3,4 +3,4 @@ const _serverUrlFromEnv = String.fromEnvironment(
 );
 final serverUrl = _serverUrlFromEnv.isEmpty
     ? 'http://localhost:8088/'
-    : 'https://$serverUrlFromEnv/';
+    : 'https://$_serverUrlFromEnv/';

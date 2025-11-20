@@ -20,7 +20,7 @@ class _CodeScreenState extends State<CodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     return Scaffold(
       body: Center(
         child: Column(

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
+import 'package:pub_quiz_shared/urls.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import 'client_provider.dart';
 
@@ -41,29 +43,51 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = TextTheme.of(context);
+    final screenWidth = MediaQuery.sizeOf(context).width;
     return Scaffold(
       body: Center(
         child: Column(
-          crossAxisAlignment: .start,
+          crossAxisAlignment: .center,
           children: [
-            Text(
-              'Game PIN:',
-              style: textTheme.displaySmall,
-            ),
-            Text(
-              '${widget.pin}',
-              style: textTheme.displayLarge,
-            ),
-            const Spacer(),
-            Text(
-              'Waiting for players...',
-              style: textTheme.displayLarge,
-            ),
-            Wrap(
+            Row(
+              mainAxisAlignment: .center,
               children: [
-                for (final player in _players) Text(player.name),
+                Column(
+                  children: [
+                    Text(
+                      'Game PIN:',
+                      style: textTheme.displaySmall,
+                    ),
+                    Text(
+                      '${widget.pin}',
+                      style: textTheme.displayLarge,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: screenWidth / 10,
+                ),
+                QrImageView(
+                  size: screenWidth / 10,
+                  data: 'https://$playerUrl/game/${widget.pin}/',
+                  version: QrVersions.auto,
+                ),
               ],
             ),
+            const Spacer(),
+            if (_players.isEmpty) ...[
+              Text(
+                'Waiting for players...',
+                style: textTheme.displayLarge,
+              ),
+            ] else ...[
+              Wrap(
+                children: [
+                  for (final player in _players) Text(player.name),
+                ],
+              ),
+            ],
+            const Spacer(),
           ],
         ),
       ),

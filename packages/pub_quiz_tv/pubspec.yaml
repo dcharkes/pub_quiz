@@ -20,6 +20,7 @@ dependencies:
   pub_quiz_client: any
   pub_quiz_shared: any
   pub_quiz_widgets: any
+  qr_flutter: ^4.1.0
   serverpod_flutter: ^2.9.2
 
 dev_dependencies:

@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "packages/pub_quiz_server/**"
+      - "packages/pub_quiz_shared/**"
       - ".github/workflows/deployment-docker.yml"
   workflow_dispatch:
     inputs:

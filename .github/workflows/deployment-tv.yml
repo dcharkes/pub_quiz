@@ -5,6 +5,8 @@ on:
     paths:
       - "packages/pub_quiz_tv/**"
       - ".github/workflows/deployment-tv.yml"
+      - "packages/pub_quiz_shared/**"
+      - "packages/pub_quiz_widgets/**"
       - "packages/pub_quiz_server/docker-compose.production.yaml"
   workflow_dispatch:
 

@@ -5,6 +5,7 @@ on:
     paths:
       - "packages/pub_quiz_admin/**"
       - ".github/workflows/deployment-jaspr.yml"
+      - "packages/pub_quiz_shared/**"
       - "packages/pub_quiz_server/docker-compose.production.yaml"
   workflow_dispatch:
 

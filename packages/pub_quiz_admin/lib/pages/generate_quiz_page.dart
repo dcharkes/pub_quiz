@@ -101,7 +101,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
                   span(classes: 'loading-indicator', [])
                 else ...[
                   i(classes: 'material-icons md-18', [text('auto_awesome')]),
-                  text(' Generate'),
+                  text('Generate'),
                 ],
               ],
             ),
@@ -111,6 +111,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
               },
               classes: 'cancel-button secondary',
               [
+                i(classes: 'material-icons md-18', [text('cancel')]),
                 text('Cancel'),
               ],
             ),

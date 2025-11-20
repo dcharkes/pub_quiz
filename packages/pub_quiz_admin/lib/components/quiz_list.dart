@@ -40,8 +40,7 @@ class QuizListState extends State<QuizList> {
           [
             tr(
               [
-                th([text('Quiz Title')]),
-                th([text('Actions')]),
+                th(colspan: 2, [text('Quizzes')]),
               ],
             ),
           ],
@@ -51,8 +50,9 @@ class QuizListState extends State<QuizList> {
               .map(
                 (quiz) => tr(
                   [
-                    td([text(quiz.title)]),
+                    td(classes: 'quiz-title-column', [text(quiz.title)]),
                     td(
+                      classes: 'quiz-actions-column',
                       [
                         div(
                           classes: 'grid',

@@ -25,8 +25,12 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
   Future<void> _join() async {
     final name = _controller.text.trim();
     if (name.isNotEmpty) {
-      await widget.client.join(name);
-      await widget.persistenceService.saveGameState(widget.gameId, name);
+      final playerId = await widget.client.join(name);
+      await widget.persistenceService.saveGameState(
+        widget.gameId,
+        name,
+        playerId,
+      );
       // Router will refresh automatically due to refreshListenable
     }
   }

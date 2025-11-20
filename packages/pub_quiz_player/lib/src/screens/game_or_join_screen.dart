@@ -70,10 +70,13 @@ class _GameOrJoinScreenState extends State<GameOrJoinScreen> {
           builder: (context, _) {
             final savedGameId = widget.persistenceService.savedGameId;
             final savedPlayerName = widget.persistenceService.savedPlayerName;
+            final savedPlayerId = widget.persistenceService.savedPlayerId;
 
             if (savedGameId == widget.gameId &&
                 savedPlayerName != null &&
-                savedPlayerName.isNotEmpty) {
+                savedPlayerName.isNotEmpty &&
+                savedPlayerId != null) {
+              client.playerId = savedPlayerId;
               return GameScreen(
                 client: client,
               );

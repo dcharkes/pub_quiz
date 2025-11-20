@@ -130,6 +130,10 @@ class PlayerEndpoint extends Endpoint {
       throw Exception('Game not found');
     }
 
+    if (game.currentQuestion == game.quiz!.questions.length) {
+      return;
+    }
+
     if (game.currentQuestion != -1) {
       // Return the current question.
       yield LiveQuestion(

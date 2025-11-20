@@ -18,6 +18,7 @@ Future<PlayerClient> connectFakeClient(String gameId) async {
     1, // fake gameId
     quizDescription: QuizDescription.fromQuiz(fakeQuiz),
     totalQuestions: fakeQuiz.questions.length,
+    isGameOver: false,
   );
 }
 
@@ -29,6 +30,7 @@ Future<PlayerClient> connectRealClient(int gameId) async {
     gameId,
     quizDescription: QuizDescription.fromQuiz(game.quiz!),
     totalQuestions: game.quiz!.questions.length,
+    isGameOver: game.currentQuestion >= game.quiz!.questions.length,
   );
 }
 
@@ -37,22 +39,24 @@ class PlayerClient {
   final int _gameId;
   final QuizDescription quizDescription;
   final int totalQuestions;
-  late final int playerId;
+  final bool isGameOver;
+  late int playerId;
 
   PlayerClient(
     this._endpoint,
     this._gameId, {
     required this.quizDescription,
     required this.totalQuestions,
+    required this.isGameOver,
   });
 
   Stream<LiveQuestion> get questionsStream {
     return _endpoint.getQuestions(_gameId);
   }
 
-  Future<void> join(String name) async {
+  Future<int> join(String name) async {
     playerId = await _endpoint.joinGame(_gameId, name);
-
+    return playerId;
   }
 
   Future<void> recordAnswer(int questionId, int answerId) async {

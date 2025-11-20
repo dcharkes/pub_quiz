@@ -206,6 +206,17 @@ void main() {
       expect(scores['Bob'], greaterThan(0));
     });
 
+    test('getQuestions closes immediately when the game is over', () async {
+      final gameId = await startGame();
+      await joinGame(gameId, 'Alice');
+      await setQuestion(gameId, 0);
+      await endpoints.game.finishGame(sessionBuilder, gameId);
+      final questionsAfterFinish = await endpoints.player
+          .getQuestions(sessionBuilder, gameId)
+          .toList();
+      expect(questionsAfterFinish.length, 0);
+    });
+
     test('game gets all events', () async {
       final gameId = await startGame();
       final queue = StreamQueue(

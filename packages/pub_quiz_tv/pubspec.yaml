@@ -8,10 +8,14 @@ environment:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/
 
 resolution: workspace
 
 dependencies:
+  flame: ^1.33.0
+  flame_rive: ^1.10.20
   flutter:
     sdk: flutter
   flutter_web_plugins:
@@ -21,6 +25,7 @@ dependencies:
   pub_quiz_shared: any
   pub_quiz_widgets: any
   qr_flutter: ^4.1.0
+  rive: ^0.13.20
   serverpod_flutter: ^2.9.2
 
 dev_dependencies:

@@ -70,6 +70,7 @@ services:
       - SERVERPOD_WEB_SERVER_PORT
       - SERVERPOD_SERVICE_SECRET
       - SERVERPOD_MAX_REQUEST_SIZE
+      - GEMINI_API_KEY
     command:
       [
         "--mode",

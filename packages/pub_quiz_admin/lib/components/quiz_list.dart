@@ -59,11 +59,12 @@ class QuizListState extends State<QuizList> {
                           classes: 'grid',
                           [
                             button(
+                              classes: 'icon-button',
                               onClick: () {
                                 Router.of(context).push('/edit/${quiz.id}');
                               },
                               [
-                                i(classes: 'material-icons md-18', [
+                                i(classes: 'material-icons icon', [
                                   text('edit'),
                                 ]),
                                 text('Edit'),
@@ -81,15 +82,16 @@ class QuizListState extends State<QuizList> {
                                   _loadQuizzes();
                                 }
                               },
-                              classes: 'secondary',
+                              classes: 'secondary icon-button',
                               [
-                                i(classes: 'material-icons md-18', [
+                                i(classes: 'material-icons icon', [
                                   text('delete'),
                                 ]),
                                 text('Delete'),
                               ],
                             ),
                             button(
+                              classes: 'icon-button',
                               onClick: () async {
                                 final pin = await DbProvider.of(
                                   context,
@@ -98,7 +100,7 @@ class QuizListState extends State<QuizList> {
                                 openWindow(gameTvUrl, '_blank');
                               },
                               [
-                                i(classes: 'material-icons md-18', [
+                                i(classes: 'material-icons icon', [
                                   text('play_arrow'),
                                 ]),
                                 text('Play'),

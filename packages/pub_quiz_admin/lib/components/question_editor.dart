@@ -88,9 +88,9 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
         ),
         button(
           onClick: component.onDelete,
-          classes: 'secondary',
+          classes: 'secondary icon-button',
           [
-            i(classes: 'material-icons md-18', [text('delete')]),
+            i(classes: 'material-icons icon', [text('delete')]),
             text('Delete'),
           ],
         ),

@@ -15,20 +15,22 @@ class Home extends StatelessComponent {
           h1([text('Pub Quiz Admin')]),
           div(classes: 'grid', [
             button(
+              classes: 'icon-button',
               onClick: () {
                 Router.of(context).push('/generate');
               },
               [
-                i(classes: 'material-icons md-18', [text('auto_awesome')]),
+                i(classes: 'material-icons icon', [text('auto_awesome')]),
                 text('Generate Quiz with AI'),
               ],
             ),
             button(
+              classes: 'icon-button',
               onClick: () {
                 Router.of(context).push('/edit');
               },
               [
-                i(classes: 'material-icons md-18', [text('add')]),
+                i(classes: 'material-icons icon', [text('add')]),
                 text('Manually Create a Quiz'),
               ],
             ),

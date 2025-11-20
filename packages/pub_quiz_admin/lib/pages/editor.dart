@@ -83,6 +83,7 @@ class _QuizEditorState extends State<QuizEditor> {
             ],
           ),
           button(
+            classes: 'add-question-button icon-button',
             onClick: () {
               setState(() {
                 _quiz!.questions.add(
@@ -96,9 +97,8 @@ class _QuizEditorState extends State<QuizEditor> {
                 );
               });
             },
-            classes: 'add-question-button',
             [
-              i(classes: 'material-icons md-18', [text('add')]),
+              i(classes: 'material-icons icon', [text('add')]),
               text('Add Question'),
             ],
           ),
@@ -106,6 +106,7 @@ class _QuizEditorState extends State<QuizEditor> {
             classes: 'grid',
             [
               button(
+                classes: 'save-button icon-button',
                 onClick: () {
                   final db = DbProvider.of(context).quiz;
                   final newQuiz = _quiz!.id == null
@@ -121,19 +122,18 @@ class _QuizEditorState extends State<QuizEditor> {
                     Router.of(context).push('/');
                   });
                 },
-                classes: 'save-button',
                 [
-                  i(classes: 'material-icons md-18', [text('save')]),
+                  i(classes: 'material-icons icon', [text('save')]),
                   text('Save Quiz'),
                 ],
               ),
               button(
+                classes: 'cancel-button secondary icon-button',
                 onClick: () {
                   Router.of(context).push('/');
                 },
-                classes: 'cancel-button secondary',
                 [
-                  i(classes: 'material-icons md-18', [text('cancel')]),
+                  i(classes: 'material-icons icon', [text('cancel')]),
                   text('Cancel'),
                 ],
               ),

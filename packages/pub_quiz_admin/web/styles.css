@@ -74,3 +74,22 @@ body {
         transform: rotate(360deg);
     }
 }
+
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+}
+
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-button .icon {
+    margin-right: 0.5rem;
+}

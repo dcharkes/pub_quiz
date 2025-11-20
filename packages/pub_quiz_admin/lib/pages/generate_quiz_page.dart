@@ -97,6 +97,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
           classes: 'grid',
           [
             button(
+              classes: 'icon-button',
               onClick: _generateQuiz,
               disabled: _isLoading,
               [
@@ -104,18 +105,18 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
                   span(classes: 'loading-indicator', []),
                   text('Generating...'),
                 ] else ...[
-                  i(classes: 'material-icons md-18', [text('auto_awesome')]),
+                  i(classes: 'material-icons icon', [text('auto_awesome')]),
                   text('Generate'),
                 ],
               ],
             ),
             button(
+              classes: 'cancel-button secondary icon-button',
               onClick: () {
                 Router.of(context).push('/');
               },
-              classes: 'cancel-button secondary',
               [
-                i(classes: 'material-icons md-18', [text('cancel')]),
+                i(classes: 'material-icons icon', [text('cancel')]),
                 text('Cancel'),
               ],
             ),

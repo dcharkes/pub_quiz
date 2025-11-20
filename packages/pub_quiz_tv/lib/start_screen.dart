@@ -18,7 +18,7 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-  final List<Player> _players = [];
+  final _players = <String>{};
   StreamSubscription<Player>? _subscription;
 
   @override
@@ -31,7 +31,7 @@ class _StartScreenState extends State<StartScreen> {
 
   void _handlePlayerJoined(Player player) {
     setState(() {
-      _players.add(player);
+      _players.add(player.name);
     });
   }
 
@@ -83,11 +83,15 @@ class _StartScreenState extends State<StartScreen> {
             const Spacer(),
             Wrap(
               children: [
-                for (final player in _players)
+                for (final player in _players) ...[
                   Text(
-                    player.name,
+                    player,
                     style: textTheme.displayLarge,
                   ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                ],
               ],
             ),
             const Spacer(),

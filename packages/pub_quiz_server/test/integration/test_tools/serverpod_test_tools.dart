@@ -14,9 +14,10 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:pub_quiz_server/src/generated/game_result.dart' as _i4;
-import 'package:pub_quiz_server/src/generated/live_question.dart' as _i5;
-import 'package:pub_quiz_server/src/generated/quiz.dart' as _i6;
+import 'package:pub_quiz_server/src/generated/player.dart' as _i4;
+import 'package:pub_quiz_server/src/generated/game_result.dart' as _i5;
+import 'package:pub_quiz_server/src/generated/live_question.dart' as _i6;
+import 'package:pub_quiz_server/src/generated/quiz.dart' as _i7;
 import 'package:pub_quiz_server/src/generated/protocol.dart';
 import 'package:pub_quiz_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -171,6 +172,38 @@ class _GameEndpoint {
     });
   }
 
+  _i3.Stream<_i4.Player> getPlayers(
+    _i1.TestSessionBuilder sessionBuilder,
+    int gameId,
+  ) {
+    var _localTestStreamManager = _i1.TestStreamManager<_i4.Player>();
+    _i1.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+          endpoint: 'game',
+          method: 'getPlayers',
+        );
+        var _localCallContext =
+            await _endpointDispatch.getMethodStreamCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'game',
+          methodName: 'getPlayers',
+          arguments: {'gameId': gameId},
+          requestedInputStreams: [],
+          serializationManager: _serializationManager,
+        );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
+  }
+
   _i3.Future<void> setQuestion(
     _i1.TestSessionBuilder sessionBuilder,
     int gameId,
@@ -206,7 +239,7 @@ class _GameEndpoint {
     });
   }
 
-  _i3.Future<_i4.GameResult> finishGame(
+  _i3.Future<_i5.GameResult> finishGame(
     _i1.TestSessionBuilder sessionBuilder,
     int gameId,
   ) async {
@@ -227,7 +260,7 @@ class _GameEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.GameResult>);
+        ) as _i3.Future<_i5.GameResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -316,11 +349,11 @@ class _PlayerEndpoint {
     });
   }
 
-  _i3.Stream<_i5.LiveQuestion> getQuestions(
+  _i3.Stream<_i6.LiveQuestion> getQuestions(
     _i1.TestSessionBuilder sessionBuilder,
     int gameId,
   ) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i5.LiveQuestion>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i6.LiveQuestion>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =
@@ -348,7 +381,7 @@ class _PlayerEndpoint {
     return _localTestStreamManager.outputStreamController.stream;
   }
 
-  _i3.Future<_i4.GameResult> getResults(
+  _i3.Future<_i5.GameResult> getResults(
     _i1.TestSessionBuilder sessionBuilder,
     int gameId,
   ) async {
@@ -369,7 +402,7 @@ class _PlayerEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.GameResult>);
+        ) as _i3.Future<_i5.GameResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -388,9 +421,9 @@ class _QuizEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i6.Quiz> createQuiz(
+  _i3.Future<_i7.Quiz> createQuiz(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Quiz quiz,
+    _i7.Quiz quiz,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -409,7 +442,7 @@ class _QuizEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i6.Quiz>);
+        ) as _i3.Future<_i7.Quiz>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -417,7 +450,7 @@ class _QuizEndpoint {
     });
   }
 
-  _i3.Future<_i6.Quiz?> readQuiz(
+  _i3.Future<_i7.Quiz?> readQuiz(
     _i1.TestSessionBuilder sessionBuilder,
     int id,
   ) async {
@@ -438,7 +471,7 @@ class _QuizEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i6.Quiz?>);
+        ) as _i3.Future<_i7.Quiz?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -446,7 +479,7 @@ class _QuizEndpoint {
     });
   }
 
-  _i3.Future<List<_i6.Quiz>> readQuizzes(
+  _i3.Future<List<_i7.Quiz>> readQuizzes(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -465,7 +498,7 @@ class _QuizEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i6.Quiz>>);
+        ) as _i3.Future<List<_i7.Quiz>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -473,9 +506,9 @@ class _QuizEndpoint {
     });
   }
 
-  _i3.Future<_i6.Quiz> updateQuiz(
+  _i3.Future<_i7.Quiz> updateQuiz(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Quiz quiz,
+    _i7.Quiz quiz,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -494,7 +527,7 @@ class _QuizEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i6.Quiz>);
+        ) as _i3.Future<_i7.Quiz>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -504,7 +537,7 @@ class _QuizEndpoint {
 
   _i3.Future<void> deleteQuiz(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Quiz quiz,
+    _i7.Quiz quiz,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =

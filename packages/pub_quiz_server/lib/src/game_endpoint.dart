@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:serverpod/serverpod.dart';
 
 import 'generated/protocol.dart';
@@ -20,6 +22,29 @@ class GameEndpoint extends Endpoint {
       GameEvent(game: game, type: GameEventType.start),
     );
     return gameId;
+  }
+
+  Stream<Player> getPlayers(Session session, int gameId) async* {
+    final controller = StreamController<Player>();
+
+    void onGameEvent(SerializableModel message) {
+      if (message is! GameEvent) {
+        controller.addError(
+          'Wrong message: $message (${message.runtimeType})',
+        );
+        return;
+      }
+
+      if (message.type == GameEventType.player_joined) {
+        controller.add(message.player!);
+      }
+    }
+
+    session.messages.addListener(
+      Topics.game(gameId),
+      onGameEvent,
+    );
+    yield* controller.stream;
   }
 
   Future<void> setQuestion(

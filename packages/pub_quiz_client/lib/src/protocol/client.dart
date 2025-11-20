@@ -11,10 +11,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:pub_quiz_client/src/protocol/game_result.dart' as _i3;
-import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i4;
-import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i5;
-import 'protocol.dart' as _i6;
+import 'package:pub_quiz_client/src/protocol/player.dart' as _i3;
+import 'package:pub_quiz_client/src/protocol/game_result.dart' as _i4;
+import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i5;
+import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i6;
+import 'protocol.dart' as _i7;
 
 /// {@category Endpoint}
 class EndpointGame extends _i1.EndpointRef {
@@ -27,6 +28,14 @@ class EndpointGame extends _i1.EndpointRef {
         'game',
         'startGame',
         {'quizId': quizId},
+      );
+
+  _i2.Stream<_i3.Player> getPlayers(int gameId) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i3.Player>, _i3.Player>(
+        'game',
+        'getPlayers',
+        {'gameId': gameId},
+        {},
       );
 
   _i2.Future<void> setQuestion(
@@ -44,8 +53,8 @@ class EndpointGame extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.GameResult> finishGame(int gameId) =>
-      caller.callServerEndpoint<_i3.GameResult>(
+  _i2.Future<_i4.GameResult> finishGame(int gameId) =>
+      caller.callServerEndpoint<_i4.GameResult>(
         'game',
         'finishGame',
         {'gameId': gameId},
@@ -89,17 +98,17 @@ class EndpointPlayer extends _i1.EndpointRef {
         },
       );
 
-  _i2.Stream<_i4.LiveQuestion> getQuestions(int gameId) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i4.LiveQuestion>,
-          _i4.LiveQuestion>(
+  _i2.Stream<_i5.LiveQuestion> getQuestions(int gameId) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i5.LiveQuestion>,
+          _i5.LiveQuestion>(
         'player',
         'getQuestions',
         {'gameId': gameId},
         {},
       );
 
-  _i2.Future<_i3.GameResult> getResults(int gameId) =>
-      caller.callServerEndpoint<_i3.GameResult>(
+  _i2.Future<_i4.GameResult> getResults(int gameId) =>
+      caller.callServerEndpoint<_i4.GameResult>(
         'player',
         'getResults',
         {'gameId': gameId},
@@ -113,35 +122,35 @@ class EndpointQuiz extends _i1.EndpointRef {
   @override
   String get name => 'quiz';
 
-  _i2.Future<_i5.Quiz> createQuiz(_i5.Quiz quiz) =>
-      caller.callServerEndpoint<_i5.Quiz>(
+  _i2.Future<_i6.Quiz> createQuiz(_i6.Quiz quiz) =>
+      caller.callServerEndpoint<_i6.Quiz>(
         'quiz',
         'createQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<_i5.Quiz?> readQuiz(int id) =>
-      caller.callServerEndpoint<_i5.Quiz?>(
+  _i2.Future<_i6.Quiz?> readQuiz(int id) =>
+      caller.callServerEndpoint<_i6.Quiz?>(
         'quiz',
         'readQuiz',
         {'id': id},
       );
 
-  _i2.Future<List<_i5.Quiz>> readQuizzes() =>
-      caller.callServerEndpoint<List<_i5.Quiz>>(
+  _i2.Future<List<_i6.Quiz>> readQuizzes() =>
+      caller.callServerEndpoint<List<_i6.Quiz>>(
         'quiz',
         'readQuizzes',
         {},
       );
 
-  _i2.Future<_i5.Quiz> updateQuiz(_i5.Quiz quiz) =>
-      caller.callServerEndpoint<_i5.Quiz>(
+  _i2.Future<_i6.Quiz> updateQuiz(_i6.Quiz quiz) =>
+      caller.callServerEndpoint<_i6.Quiz>(
         'quiz',
         'updateQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<void> deleteQuiz(_i5.Quiz quiz) => caller.callServerEndpoint<void>(
+  _i2.Future<void> deleteQuiz(_i6.Quiz quiz) => caller.callServerEndpoint<void>(
         'quiz',
         'deleteQuiz',
         {'quiz': quiz},
@@ -164,7 +173,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i6.Protocol(),
+          _i7.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

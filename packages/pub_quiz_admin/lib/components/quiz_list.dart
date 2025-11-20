@@ -63,7 +63,7 @@ class QuizListState extends State<QuizList> {
                               },
                               [
                                 i(classes: 'material-icons md-18', [
-                                  text('edit')
+                                  text('edit'),
                                 ]),
                                 text('Edit'),
                               ],
@@ -73,9 +73,9 @@ class QuizListState extends State<QuizList> {
                                 setState(() {
                                   _quizzes.remove(quiz);
                                 });
-                                await DbProvider.of(context)
-                                    .quiz
-                                    .deleteQuiz(quiz);
+                                await DbProvider.of(
+                                  context,
+                                ).quiz.deleteQuiz(quiz);
                                 if (mounted) {
                                   _loadQuizzes();
                                 }
@@ -83,27 +83,27 @@ class QuizListState extends State<QuizList> {
                               classes: 'secondary',
                               [
                                 i(classes: 'material-icons md-18', [
-                                  text('delete')
+                                  text('delete'),
                                 ]),
                                 text('Delete'),
                               ],
                             ),
                             button(
                               onClick: () async {
-                                await DbProvider.of(context)
-                                    .game
-                                    .startGame(quiz.id!);
+                                final pin = await DbProvider.of(
+                                  context,
+                                ).game.startGame(quiz.id!);
                                 const tvAppUrlFromEnv = String.fromEnvironment(
                                   'TV_URL',
                                 );
                                 final tvUrl = tvAppUrlFromEnv.isEmpty
-                                    ? 'http://localhost:8089/'
-                                    : 'https://$tvAppUrlFromEnv/';
+                                    ? 'http://localhost:58860/#/game/$pin'
+                                    : 'https://$tvAppUrlFromEnv/#/game/$pin';
                                 openWindow(tvUrl, '_blank');
                               },
                               [
                                 i(classes: 'material-icons md-18', [
-                                  text('play_arrow')
+                                  text('play_arrow'),
                                 ]),
                                 text('Play'),
                               ],

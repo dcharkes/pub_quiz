@@ -6,10 +6,23 @@ import 'topics.dart';
 
 class PlayerEndpoint extends Endpoint {
   Future<int> joinGame(Session session, int gameId, String name) async {
-    return (await Player.db.insertRow(
+    final player = await Player.db.insertRow(
       session,
       Player(name: name, gameId: gameId, score: 0),
-    )).id!;
+    );
+
+    unawaited(
+      session.messages.postMessage(
+        Topics.game(gameId),
+        GameEvent(
+          type: GameEventType.player_joined,
+          game: player.game!,
+          player: player,
+        ),
+      ),
+    );
+
+    return player.id!;
   }
 
   Future<int> recordAnswer(

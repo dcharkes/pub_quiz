@@ -38,11 +38,16 @@ void main(List<String> args) async {
     }
     await Future<void>.delayed(const Duration(seconds: 5));
     final answerIndex = random.nextInt(question.question.answers.length);
-    await client.player.recordAnswer(
+    
+    final score = await client.player.recordAnswer(
       playerId,
       question.index,
       answerIndex,
       DateTime.now(),
+    );
+    print(
+      'Answered ${question.question.answers[answerIndex].text},'
+      ' got $score points',
     );
   }
 

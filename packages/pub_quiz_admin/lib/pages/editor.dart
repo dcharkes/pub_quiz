@@ -52,7 +52,7 @@ class _QuizEditorState extends State<QuizEditor> {
           div(
             classes: 'form-group',
             [
-              label(htmlFor: 'quiz-title', [text('Quiz Title')]),
+              h3([text('Quiz Title')]),
               input(
                 id: 'quiz-title',
                 type: InputType.text,

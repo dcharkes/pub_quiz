@@ -5,7 +5,7 @@ import 'generated/protocol.dart';
 import 'topics.dart';
 
 class PlayerEndpoint extends Endpoint {
-  Future<int> joinGame(Session session, int gameId, String name) async {
+  Future<Game> getGame(Session session, int gameId) async {
     final game = await Game.db.findById(
       session,
       gameId,
@@ -14,10 +14,16 @@ class PlayerEndpoint extends Endpoint {
     if (game == null) {
       throw Exception('Game not found');
     }
+    return game;
+  }
+
+  Future<int> joinGame(Session session, int gameId, String name) async {
+    final game = await getGame(session, gameId);
     final player = await Player.db.insertRow(
       session,
       Player(name: name, gameId: gameId, score: 0),
     );
+    player.game = game;
 
     unawaited(
       session.messages.postMessage(

@@ -14,9 +14,10 @@ import 'dart:async' as _i2;
 import 'package:pub_quiz_client/src/protocol/game_event.dart' as _i3;
 import 'package:pub_quiz_client/src/protocol/player.dart' as _i4;
 import 'package:pub_quiz_client/src/protocol/game_result.dart' as _i5;
-import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i6;
-import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i7;
-import 'protocol.dart' as _i8;
+import 'package:pub_quiz_client/src/protocol/game.dart' as _i6;
+import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i7;
+import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i8;
+import 'protocol.dart' as _i9;
 
 /// {@category Endpoint}
 class EndpointGame extends _i1.EndpointRef {
@@ -78,6 +79,13 @@ class EndpointPlayer extends _i1.EndpointRef {
   @override
   String get name => 'player';
 
+  _i2.Future<_i6.Game> getGame(int gameId) =>
+      caller.callServerEndpoint<_i6.Game>(
+        'player',
+        'getGame',
+        {'gameId': gameId},
+      );
+
   _i2.Future<int> joinGame(
     int gameId,
     String name,
@@ -108,9 +116,9 @@ class EndpointPlayer extends _i1.EndpointRef {
         },
       );
 
-  _i2.Stream<_i6.LiveQuestion> getQuestions(int gameId) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i6.LiveQuestion>,
-          _i6.LiveQuestion>(
+  _i2.Stream<_i7.LiveQuestion> getQuestions(int gameId) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i7.LiveQuestion>,
+          _i7.LiveQuestion>(
         'player',
         'getQuestions',
         {'gameId': gameId},
@@ -132,46 +140,46 @@ class EndpointQuiz extends _i1.EndpointRef {
   @override
   String get name => 'quiz';
 
-  _i2.Future<_i7.Quiz> createQuiz(_i7.Quiz quiz) =>
-      caller.callServerEndpoint<_i7.Quiz>(
+  _i2.Future<_i8.Quiz> createQuiz(_i8.Quiz quiz) =>
+      caller.callServerEndpoint<_i8.Quiz>(
         'quiz',
         'createQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<_i7.Quiz?> readQuiz(int id) =>
-      caller.callServerEndpoint<_i7.Quiz?>(
+  _i2.Future<_i8.Quiz?> readQuiz(int id) =>
+      caller.callServerEndpoint<_i8.Quiz?>(
         'quiz',
         'readQuiz',
         {'id': id},
       );
 
-  _i2.Future<List<_i7.Quiz>> readQuizzes() =>
-      caller.callServerEndpoint<List<_i7.Quiz>>(
+  _i2.Future<List<_i8.Quiz>> readQuizzes() =>
+      caller.callServerEndpoint<List<_i8.Quiz>>(
         'quiz',
         'readQuizzes',
         {},
       );
 
-  _i2.Future<_i7.Quiz> updateQuiz(_i7.Quiz quiz) =>
-      caller.callServerEndpoint<_i7.Quiz>(
+  _i2.Future<_i8.Quiz> updateQuiz(_i8.Quiz quiz) =>
+      caller.callServerEndpoint<_i8.Quiz>(
         'quiz',
         'updateQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<void> deleteQuiz(_i7.Quiz quiz) => caller.callServerEndpoint<void>(
+  _i2.Future<void> deleteQuiz(_i8.Quiz quiz) => caller.callServerEndpoint<void>(
         'quiz',
         'deleteQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<_i7.Quiz> generateQuiz({
+  _i2.Future<_i8.Quiz> generateQuiz({
     required int numberOfQuestions,
     required String style,
     required String topic,
   }) =>
-      caller.callServerEndpoint<_i7.Quiz>(
+      caller.callServerEndpoint<_i8.Quiz>(
         'quiz',
         'generateQuiz',
         {
@@ -198,7 +206,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i8.Protocol(),
+          _i9.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

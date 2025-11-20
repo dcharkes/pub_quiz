@@ -23,11 +23,12 @@ Future<PlayerClient> connectFakeClient(String gameId) async {
 
 Future<PlayerClient> connectRealClient(int gameId) async {
   final client = Client(serverUrl);
+  final game = await client.player.getGame(gameId);
   return PlayerClient(
     client.player,
     gameId,
-    quizDescription: QuizDescription(title: 'My Quiz'), // TODO
-    totalQuestions: 10, // TODO
+    quizDescription: QuizDescription.fromQuiz(game.quiz!),
+    totalQuestions: game.quiz!.questions.length,
   );
 }
 
@@ -36,7 +37,7 @@ class PlayerClient {
   final int _gameId;
   final QuizDescription quizDescription;
   final int totalQuestions;
-  int? _playerId;
+  late final int _playerId;
 
   PlayerClient(
     this._endpoint,
@@ -50,13 +51,14 @@ class PlayerClient {
   }
 
   Future<void> join(String name) async {
-    _playerId = await _endpoint.joinGame(_gameId, name);
+    final player = await _endpoint.joinGame(_gameId, name);
+    _playerId = player.id!;
+
   }
 
   Future<void> recordAnswer(int questionId, int answerId) async {
-    if (_playerId == null) return;
     await _endpoint.recordAnswer(
-      _playerId!,
+      _playerId,
       questionId,
       answerId,
       DateTime.now(),
@@ -144,8 +146,13 @@ class FakeEndpointPlayer implements EndpointPlayer {
   int _correctAnswers = 0;
 
   @override
-  Future<int> joinGame(int gameId, String name) async {
-    return 123; // Fake player ID
+  Future<Player> joinGame(int gameId, String name) async {
+    return Player(
+      id: 123,
+      gameId: gameId,
+      name: name,
+      score: 0,
+    );
   }
 
   @override
@@ -202,6 +209,18 @@ class FakeEndpointPlayer implements EndpointPlayer {
   void dispose() {
     _clicksSubscription.cancel();
     _questionController.close();
+  }
+  
+  @override
+  Future<Game> getGame(int gameId) async {
+    return Game(
+      id: gameId,
+      quiz: _quiz,
+      quizId: _quiz.id!,
+      currentQuestion: _currentQuestion,
+      questionStart: DateTime.now(),
+      deadline: DateTime.now().add(_interval),
+    );
   }
 }
 

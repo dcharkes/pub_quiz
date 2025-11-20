@@ -5,6 +5,7 @@ game:
   - setQuestion:
   - finishGame:
 player:
+  - getGame:
   - joinGame:
   - recordAnswer:
   - getQuestions:

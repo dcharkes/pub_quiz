@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pub_quiz_client/pub_quiz_client.dart';
-import 'package:pub_quiz_shared/urls.dart';
 import '../services/fake_player_client.dart';
 import '../services/persistence_service.dart';
 import 'game_screen.dart';

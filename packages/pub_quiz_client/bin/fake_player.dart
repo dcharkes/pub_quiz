@@ -24,7 +24,11 @@ void main(List<String> args) async {
     return;
   }
   final client = Client(server);
-
+  final game = await client.player.getGame(gameId);
   final playerId = await client.player.joinGame(gameId, name);
-  print('Joined the game with ID $playerId');
+  print('Joined the game ${game.quiz!.title} with ID $playerId');
+
+  await for (final question in client.player.getQuestions(gameId)) {
+    print('Got question: ');
+  }
 }

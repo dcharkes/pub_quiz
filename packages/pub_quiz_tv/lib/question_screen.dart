@@ -21,7 +21,7 @@ class QuestionScreen extends StatefulWidget {
 
 class _QuestionScreenState extends State<QuestionScreen> {
   int currentQuestion = 0;
-  final maxTime = 30;
+  final maxTime = 10;
   int timeLeft = 0;
   Game? _game;
   bool _showAnswer = false;
@@ -72,6 +72,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
     if (currentQuestion < _game!.quiz!.questions.length - 1) {
       _loadQuestion(currentQuestion + 1);
     } else {
+      ClientProvider.of(context).game.finishGame(_game!.id!);
       context.go('/game/${_game!.id!}/over');
     }
   }

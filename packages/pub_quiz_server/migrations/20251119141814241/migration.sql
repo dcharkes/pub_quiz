@@ -7,6 +7,7 @@ CREATE TABLE "game" (
     "id" bigserial PRIMARY KEY,
     "quizId" bigint NOT NULL,
     "currentQuestion" bigint NOT NULL,
+    "questionStart" timestamp without time zone NOT NULL,
     "deadline" timestamp without time zone NOT NULL
 );
 

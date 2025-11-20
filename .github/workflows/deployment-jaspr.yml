@@ -70,6 +70,7 @@ jobs:
           scp -r build_output/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/pub_quiz_admin/
 
           scp packages/pub_quiz_server/docker-compose.production.yaml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/docker-compose.production.yaml
+          scp packages/pub_quiz_server/nginx-spa.conf ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/nginx-spa.conf
 
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             touch .env

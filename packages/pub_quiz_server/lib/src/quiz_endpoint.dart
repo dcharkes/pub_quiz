@@ -44,6 +44,6 @@ class QuizEndpoint extends Endpoint {
       style: style,
       topic: topic,
     );
-    return quiz;
+    return await Quiz.db.insertRow(session, quiz);
   }
 }

@@ -32,5 +32,16 @@ void main() {
         expect(quiz2.questions, isNotEmpty);
       },
     );
+
+    test('Generate quiz', () async {
+      final quiz = await endpoints.quiz.generateQuiz(
+        sessionBuilder,
+        numberOfQuestions: 10,
+        style: 'funny',
+        topic: 'A hackathon with Dart, Flutter, and Jaspr.',
+      );
+      print(quiz.title);
+      expect(quiz.questions, isNotEmpty);
+    });
   });
 }

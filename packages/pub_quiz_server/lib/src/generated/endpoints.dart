@@ -321,6 +321,36 @@ class Endpoints extends _i1.EndpointDispatch {
             params['quiz'],
           ),
         ),
+        'generateQuiz': _i1.MethodConnector(
+          name: 'generateQuiz',
+          params: {
+            'numberOfQuestions': _i1.ParameterDescription(
+              name: 'numberOfQuestions',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'style': _i1.ParameterDescription(
+              name: 'style',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'topic': _i1.ParameterDescription(
+              name: 'topic',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['quiz'] as _i4.QuizEndpoint).generateQuiz(
+            session,
+            numberOfQuestions: params['numberOfQuestions'],
+            style: params['style'],
+            topic: params['topic'],
+          ),
+        ),
       },
     );
   }

@@ -155,6 +155,21 @@ class EndpointQuiz extends _i1.EndpointRef {
         'deleteQuiz',
         {'quiz': quiz},
       );
+
+  _i2.Future<_i5.Quiz> generateQuiz({
+    required int numberOfQuestions,
+    required String style,
+    required String topic,
+  }) =>
+      caller.callServerEndpoint<_i5.Quiz>(
+        'quiz',
+        'generateQuiz',
+        {
+          'numberOfQuestions': numberOfQuestions,
+          'style': style,
+          'topic': topic,
+        },
+      );
 }
 
 class Client extends _i1.ServerpodClientShared {

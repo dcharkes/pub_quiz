@@ -3,6 +3,7 @@ import 'dart:js_interop';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
+import 'package:pub_quiz_shared/urls.dart';
 
 import 'db.dart';
 
@@ -93,13 +94,8 @@ class QuizListState extends State<QuizList> {
                                 final pin = await DbProvider.of(
                                   context,
                                 ).game.startGame(quiz.id!);
-                                const tvAppUrlFromEnv = String.fromEnvironment(
-                                  'TV_URL',
-                                );
-                                final tvUrl = tvAppUrlFromEnv.isEmpty
-                                    ? 'http://localhost:58860/#/game/$pin'
-                                    : 'https://$tvAppUrlFromEnv/#/game/$pin';
-                                openWindow(tvUrl, '_blank');
+                                final gameTvUrl = '$tvUrl/game/$pin';
+                                openWindow(gameTvUrl, '_blank');
                               },
                               [
                                 i(classes: 'material-icons md-18', [

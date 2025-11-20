@@ -37,6 +37,7 @@ The output must be valid JSON that matches the specific structure below.
 * **Answers:** Every single question must have EXACTLY 4 possible answers.
 * **Correctness:** Exactly one answer must be marked `true`, and the other three must be `false`.
 * **Distractors:** The wrong answers should be plausible but incorrect.
+* **Factual:** Ensure the question and answers are based on facts.
 
 **JSON Output Template:**
 ```json

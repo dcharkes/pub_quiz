@@ -1,6 +1,7 @@
+import 'dart:js_interop';
+
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
-
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 import 'db.dart';
@@ -65,6 +66,22 @@ class QuizListState extends State<QuizList> {
                     text('Delete'),
                   ],
                 ),
+                button(
+                  onClick: () async {
+                    await DbProvider.of(context).game.startGame(quiz.id!);
+                    const tvAppUrlFromEnv = String.fromEnvironment(
+                      'TV_URL',
+                    );
+                    final tvUrl = tvAppUrlFromEnv.isEmpty
+                        ? 'http://localhost:8089/'
+                        : 'https://$tvAppUrlFromEnv/';
+                    openWindow(tvUrl, '_blank');
+                  },
+                  [
+                    i(classes: 'material-icons md-18', [text('play_arrow')]),
+                    text('Play'),
+                  ],
+                ),
               ],
             ),
           )
@@ -72,3 +89,6 @@ class QuizListState extends State<QuizList> {
     );
   }
 }
+
+@JS('window.open')
+external void openWindow(String url, String target);

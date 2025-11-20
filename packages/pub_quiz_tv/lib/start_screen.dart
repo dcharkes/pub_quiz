@@ -70,7 +70,7 @@ class _StartScreenState extends State<StartScreen> {
                 ),
                 QrImageView(
                   size: screenWidth / 10,
-                  data: 'https://$playerUrl/game/${widget.pin}/',
+                  data: '$playerUrl/game/${widget.pin}/',
                   version: QrVersions.auto,
                 ),
               ],

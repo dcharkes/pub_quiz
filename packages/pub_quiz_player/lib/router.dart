@@ -1,13 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'src/screens/enter_game_id_screen.dart';
 import 'src/screens/game_or_join_screen.dart';
 import 'src/services/persistence_service.dart';
 
-GoRouter createRouter(
-  PersistenceService persistenceService, {
-  FirebaseFirestore? firestore,
-}) {
+GoRouter createRouter(PersistenceService persistenceService) {
   return GoRouter(
     initialLocation: '/',
     refreshListenable: persistenceService,
@@ -30,7 +26,6 @@ GoRouter createRouter(
           return GameOrJoinScreen(
             gameId: gameId,
             persistenceService: persistenceService,
-            firestore: firestore ?? FirebaseFirestore.instance,
           );
         },
       ),

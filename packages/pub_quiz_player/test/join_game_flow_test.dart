@@ -1,4 +1,3 @@
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pub_quiz_player/main.dart';
@@ -7,17 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   testWidgets('Full Join Game Flow Test', (WidgetTester tester) async {
-    // 1. Setup Mock SharedPreferences and FakeFirestore
+    // 1. Setup Mock SharedPreferences
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final persistenceService = PersistenceService(prefs);
-    final firestore = FakeFirebaseFirestore();
 
     // 2. Start App
     await tester.pumpWidget(
       MyApp(
         persistenceService: persistenceService,
-        firestore: firestore,
       ),
     );
     await tester.pumpAndSettle();
@@ -63,7 +60,6 @@ void main() {
     await tester.pumpWidget(
       MyApp(
         persistenceService: persistenceService,
-        firestore: firestore,
       ),
     );
     await tester.pumpAndSettle();

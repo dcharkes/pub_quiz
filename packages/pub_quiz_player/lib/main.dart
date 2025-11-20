@@ -1,30 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:pub_quiz_widgets/pub_quiz_widgets.dart';
 
-import 'firebase_options.dart';
 import 'router.dart';
 import 'src/services/persistence_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy(); // Removes the hash from the URL
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final persistenceService = await PersistenceService.init();
   runApp(MyApp(persistenceService: persistenceService));
 }
 
 class MyApp extends StatelessWidget {
   final PersistenceService persistenceService;
-  final FirebaseFirestore? firestore;
 
   const MyApp({
     super.key,
     required this.persistenceService,
-    this.firestore,
   });
 
   @override
@@ -32,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Pub Quiz Player',
       theme: pubQuizThemeData,
-      routerConfig: createRouter(persistenceService, firestore: firestore),
+      routerConfig: createRouter(persistenceService),
     );
   }
 }

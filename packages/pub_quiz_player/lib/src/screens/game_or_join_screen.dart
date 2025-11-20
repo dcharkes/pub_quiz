@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../services/fake_player_client.dart';
 import '../services/persistence_service.dart';
@@ -8,13 +7,11 @@ import 'join_game_screen.dart';
 class GameOrJoinScreen extends StatefulWidget {
   final String gameId;
   final PersistenceService persistenceService;
-  final FirebaseFirestore firestore;
 
   const GameOrJoinScreen({
     super.key,
     required this.gameId,
     required this.persistenceService,
-    required this.firestore,
   });
 
   @override

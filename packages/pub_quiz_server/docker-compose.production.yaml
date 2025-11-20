@@ -108,7 +108,7 @@ services:
       - serverpod-network
   admin-frontend:
     image: nginx:alpine
-    restart: on-failure
+    restart: always
     volumes:
       - /var/www/pub_quiz_admin:/usr/share/nginx/html:ro
     labels:
@@ -122,7 +122,7 @@ services:
   
   tv-frontend:
     image: nginx:alpine
-    restart: on-failure
+    restart: always
     volumes:
       - /var/www/pub_quiz_tv:/usr/share/nginx/html:ro
     labels:

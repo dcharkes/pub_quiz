@@ -101,6 +101,7 @@ class _StartScreenState extends State<StartScreen> {
                 ],
               ],
             ),
+            const Spacer(),
           ],
         ),
       ),

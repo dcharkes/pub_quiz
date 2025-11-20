@@ -112,7 +112,6 @@ services:
     restart: always
     volumes:
       - /var/www/pub_quiz_admin:/usr/share/nginx/html:ro
-      - ./nginx-spa.conf:/etc/nginx/conf.d/default.conf:ro 
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.admin.rule=Host(`${ADMIN_URL}`)" 
@@ -126,7 +125,6 @@ services:
     restart: always
     volumes:
       - /var/www/pub_quiz_tv:/usr/share/nginx/html:ro
-      - ./nginx-spa.conf:/etc/nginx/conf.d/default.conf:ro 
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tv.rule=Host(`${TV_URL}`)"
@@ -140,7 +138,6 @@ services:
     restart: always
     volumes:
       - /var/www/pub_quiz_player:/usr/share/nginx/html:ro
-      - ./nginx-spa.conf:/etc/nginx/conf.d/default.conf:ro 
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.player.rule=Host(`${PLAYER_URL}`)"

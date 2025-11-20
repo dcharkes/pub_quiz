@@ -118,7 +118,7 @@ class _QuizEditorState extends State<QuizEditor> {
                         _quiz = quiz;
                       });
                     }
-                    Router.of(context).back();
+                    Router.of(context).push('/');
                   });
                 },
                 classes: 'save-button',
@@ -129,7 +129,7 @@ class _QuizEditorState extends State<QuizEditor> {
               ),
               button(
                 onClick: () {
-                  Router.of(context).back();
+                  Router.of(context).push('/');
                 },
                 classes: 'cancel-button secondary',
                 [

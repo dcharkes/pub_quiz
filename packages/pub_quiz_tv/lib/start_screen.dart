@@ -76,6 +76,13 @@ class _StartScreenState extends State<StartScreen> {
               ],
             ),
             const Spacer(),
+            FilledButton(
+              onPressed: () {
+                context.go('/game/${widget.pin}/questions');
+              },
+              child: const Text('Start'),
+            ),
+            const Spacer(),
             Text(
               'Waiting for players...',
               style: textTheme.displayLarge,
@@ -93,13 +100,6 @@ class _StartScreenState extends State<StartScreen> {
                   ),
                 ],
               ],
-            ),
-            const Spacer(),
-            FilledButton(
-              onPressed: () {
-                context.go('/game/${widget.pin}/questions');
-              },
-              child: const Text('Start'),
             ),
           ],
         ),

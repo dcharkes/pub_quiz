@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:serverpod/serverpod.dart';
+
 import 'generated/protocol.dart';
 import 'topics.dart';
 
@@ -9,7 +10,10 @@ class PlayerEndpoint extends Endpoint {
     final game = await Game.db.findById(
       session,
       gameId,
-      include: Game.include(quiz: Quiz.include()),
+      include: Game.include(
+        quiz: Quiz.include(),
+        players: Player.includeList(),
+      ),
     );
     if (game == null) {
       throw Exception('Game not found');

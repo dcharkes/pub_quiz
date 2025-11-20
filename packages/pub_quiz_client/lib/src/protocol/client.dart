@@ -11,11 +11,12 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:pub_quiz_client/src/protocol/player.dart' as _i3;
-import 'package:pub_quiz_client/src/protocol/game_result.dart' as _i4;
-import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i5;
-import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i6;
-import 'protocol.dart' as _i7;
+import 'package:pub_quiz_client/src/protocol/game_event.dart' as _i3;
+import 'package:pub_quiz_client/src/protocol/player.dart' as _i4;
+import 'package:pub_quiz_client/src/protocol/game_result.dart' as _i5;
+import 'package:pub_quiz_client/src/protocol/live_question.dart' as _i6;
+import 'package:pub_quiz_client/src/protocol/quiz.dart' as _i7;
+import 'protocol.dart' as _i8;
 
 /// {@category Endpoint}
 class EndpointGame extends _i1.EndpointRef {
@@ -30,8 +31,17 @@ class EndpointGame extends _i1.EndpointRef {
         {'quizId': quizId},
       );
 
-  _i2.Stream<_i3.Player> getPlayers(int gameId) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i3.Player>, _i3.Player>(
+  _i2.Stream<_i3.GameEvent> getGameEvents(int gameId) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i3.GameEvent>,
+          _i3.GameEvent>(
+        'game',
+        'getGameEvents',
+        {'gameId': gameId},
+        {},
+      );
+
+  _i2.Stream<_i4.Player> getPlayers(int gameId) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i4.Player>, _i4.Player>(
         'game',
         'getPlayers',
         {'gameId': gameId},
@@ -53,8 +63,8 @@ class EndpointGame extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i4.GameResult> finishGame(int gameId) =>
-      caller.callServerEndpoint<_i4.GameResult>(
+  _i2.Future<_i5.GameResult> finishGame(int gameId) =>
+      caller.callServerEndpoint<_i5.GameResult>(
         'game',
         'finishGame',
         {'gameId': gameId},
@@ -98,17 +108,17 @@ class EndpointPlayer extends _i1.EndpointRef {
         },
       );
 
-  _i2.Stream<_i5.LiveQuestion> getQuestions(int gameId) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i5.LiveQuestion>,
-          _i5.LiveQuestion>(
+  _i2.Stream<_i6.LiveQuestion> getQuestions(int gameId) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i6.LiveQuestion>,
+          _i6.LiveQuestion>(
         'player',
         'getQuestions',
         {'gameId': gameId},
         {},
       );
 
-  _i2.Future<_i4.GameResult> getResults(int gameId) =>
-      caller.callServerEndpoint<_i4.GameResult>(
+  _i2.Future<_i5.GameResult> getResults(int gameId) =>
+      caller.callServerEndpoint<_i5.GameResult>(
         'player',
         'getResults',
         {'gameId': gameId},
@@ -122,35 +132,35 @@ class EndpointQuiz extends _i1.EndpointRef {
   @override
   String get name => 'quiz';
 
-  _i2.Future<_i6.Quiz> createQuiz(_i6.Quiz quiz) =>
-      caller.callServerEndpoint<_i6.Quiz>(
+  _i2.Future<_i7.Quiz> createQuiz(_i7.Quiz quiz) =>
+      caller.callServerEndpoint<_i7.Quiz>(
         'quiz',
         'createQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<_i6.Quiz?> readQuiz(int id) =>
-      caller.callServerEndpoint<_i6.Quiz?>(
+  _i2.Future<_i7.Quiz?> readQuiz(int id) =>
+      caller.callServerEndpoint<_i7.Quiz?>(
         'quiz',
         'readQuiz',
         {'id': id},
       );
 
-  _i2.Future<List<_i6.Quiz>> readQuizzes() =>
-      caller.callServerEndpoint<List<_i6.Quiz>>(
+  _i2.Future<List<_i7.Quiz>> readQuizzes() =>
+      caller.callServerEndpoint<List<_i7.Quiz>>(
         'quiz',
         'readQuizzes',
         {},
       );
 
-  _i2.Future<_i6.Quiz> updateQuiz(_i6.Quiz quiz) =>
-      caller.callServerEndpoint<_i6.Quiz>(
+  _i2.Future<_i7.Quiz> updateQuiz(_i7.Quiz quiz) =>
+      caller.callServerEndpoint<_i7.Quiz>(
         'quiz',
         'updateQuiz',
         {'quiz': quiz},
       );
 
-  _i2.Future<void> deleteQuiz(_i6.Quiz quiz) => caller.callServerEndpoint<void>(
+  _i2.Future<void> deleteQuiz(_i7.Quiz quiz) => caller.callServerEndpoint<void>(
         'quiz',
         'deleteQuiz',
         {'quiz': quiz},
@@ -188,7 +198,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i7.Protocol(),
+          _i8.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

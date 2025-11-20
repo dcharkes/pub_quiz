@@ -6,6 +6,14 @@ import 'topics.dart';
 
 class PlayerEndpoint extends Endpoint {
   Future<int> joinGame(Session session, int gameId, String name) async {
+    final game = await Game.db.findById(
+      session,
+      gameId,
+      include: Game.include(quiz: Quiz.include()),
+    );
+    if (game == null) {
+      throw Exception('Game not found');
+    }
     final player = await Player.db.insertRow(
       session,
       Player(name: name, gameId: gameId, score: 0),
@@ -16,7 +24,7 @@ class PlayerEndpoint extends Endpoint {
         Topics.game(gameId),
         GameEvent(
           type: GameEventType.player_joined,
-          game: player.game!,
+          game: game,
           player: player,
         ),
       ),
@@ -43,11 +51,47 @@ class PlayerEndpoint extends Endpoint {
 
     // Check if the answer is right.
     final game = player.game!;
-    if (!game
-        .quiz!
-        .questions[game.currentQuestion]
-        .answers[answerIndex]
-        .correct) {
+    final score = _getScore(
+      game,
+      questionIndex,
+      answerIndex,
+      answerTime,
+    );
+
+    final updatedPlayer = score != 0
+        ? await Player.db.updateRow(
+            session,
+            player.copyWith(score: player.score + score),
+          )
+        : player;
+
+    // To push to the TV.
+    await session.messages.postMessage(
+      Topics.game(game.id!),
+      GameEvent(
+        type: GameEventType.player_answered,
+        game: game,
+        player: updatedPlayer,
+      ),
+    );
+    print('posted player_answered event for player ${updatedPlayer.id}');
+
+    return score;
+  }
+
+  int _getScore(
+    Game game,
+    int questionIndex,
+    int answerIndex,
+    DateTime answerTime,
+  ) {
+    if (questionIndex != game.currentQuestion) {
+      // No score for cheaters.
+      return 0;
+    }
+
+    final answers = game.quiz!.questions[questionIndex].answers;
+    if (answerIndex >= answers.length || !answers[answerIndex].correct) {
       // No score update.
       return 0;
     }
@@ -63,26 +107,7 @@ class PlayerEndpoint extends Endpoint {
         .difference(game.questionStart)
         .inMicroseconds;
     final timeLeft = game.deadline.difference(answerTime).inMicroseconds;
-    final score = 500 + (timeLeft * 500 ~/ questionDuration);
-
-    await Player.db.updateRow(
-      session,
-      player.copyWith(score: player.score + score),
-    );
-
-    // To push to the TV.
-    unawaited(
-      session.messages.postMessage(
-        Topics.game(game.id!),
-        GameEvent(
-          type: GameEventType.player_answered,
-          game: game,
-          player: player,
-        ),
-      ),
-    );
-
-    return score;
+    return 500 + (timeLeft * 500 ~/ questionDuration);
   }
 
   Stream<LiveQuestion> getQuestions(Session session, int gameId) async* {

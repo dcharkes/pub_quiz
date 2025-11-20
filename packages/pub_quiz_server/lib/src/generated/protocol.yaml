@@ -1,5 +1,6 @@
 game:
   - startGame:
+  - getGameEvents:
   - getPlayers:
   - setQuestion:
   - finishGame:

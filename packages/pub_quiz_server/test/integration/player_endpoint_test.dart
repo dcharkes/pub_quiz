@@ -140,7 +140,6 @@ void main() {
         endpoints.player.getQuestions(sessionBuilder, gameId),
       );
       final question = await questionsQueue.next;
-      print('Question deadline: ${question.deadline}');
       while (DateTime.now().isBefore(question.deadline)) {
         await Future<void>.delayed(oneMicro);
       }
@@ -151,6 +150,30 @@ void main() {
       );
       expect(score, 0);
       await questionsQueue.cancel();
+    });
+
+    test('player gets no score answering wrong question', () async {
+      final gameId = await startGame();
+      final playerId = await joinGame(gameId);
+      await setQuestion(gameId, 0, oneMicro);
+      final score = await answer(playerId, 1, 0);
+      expect(score, 0);
+    });
+
+    test('player gets no exception when question is out of range', () async {
+      final gameId = await startGame();
+      final playerId = await joinGame(gameId);
+      await setQuestion(gameId, 0, oneMicro);
+      final score = await answer(playerId, 123456, 0);
+      expect(score, 0);
+    });
+
+    test('player gets no exception when answer is out of range', () async {
+      final gameId = await startGame();
+      final playerId = await joinGame(gameId);
+      await setQuestion(gameId, 0, oneMicro);
+      final score = await answer(playerId, 0, 123456);
+      expect(score, 0);
     });
 
     test('player can get game results', () async {
@@ -181,6 +204,51 @@ void main() {
       await (player1done.future, player2done.future).wait;
       expect(scores['Alice'], greaterThan(0));
       expect(scores['Bob'], greaterThan(0));
+    });
+
+    test('game gets all events', () async {
+      final gameId = await startGame();
+      final queue = StreamQueue(
+        endpoints.game.getGameEvents(sessionBuilder, gameId),
+      );
+      // p1 joins
+      final p1 = await joinGame(gameId, 'Alice');
+      final p1join = await queue.next;
+      expect(p1join.type, GameEventType.player_joined);
+      expect(p1join.player!.name, 'Alice');
+      expect(p1join.player!.id, p1);
+
+      // p2 joins
+      final p2 = await joinGame(gameId, 'Bob');
+      final p2join = await queue.next;
+      expect(p2join.type, GameEventType.player_joined);
+      expect(p2join.player!.name, 'Bob');
+      expect(p2join.player!.id, p2);
+
+      // next question.
+      await setQuestion(gameId, 0);
+      final q1 = await queue.next;
+      expect(q1.type, GameEventType.question);
+      expect(q1.game.currentQuestion, 0);
+
+      // p1 answers.
+      final p1score = await answer(p1, 0, 1);
+      final p1answer = await queue.next;
+      print('got answer event');
+      expect(p1answer.type, GameEventType.player_answered);
+      expect(p1answer.player!.id, p1);
+      expect(p1answer.player!.score, p1score);
+
+      // p2 answers.
+      final p2score = await answer(p2, 0, 2);
+      print('p2 ($p2) answered');
+      final p2answer = await queue.next;
+      print('got answer event');
+      expect(p2answer.type, GameEventType.player_answered);
+      expect(p2answer.player!.id, p2);
+      expect(p2answer.player!.score, p2score);
+
+      await queue.cancel();
     });
   });
 }

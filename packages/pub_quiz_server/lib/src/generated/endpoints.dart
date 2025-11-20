@@ -108,6 +108,27 @@ class Endpoints extends _i1.EndpointDispatch {
             params['gameId'],
           ),
         ),
+        'getGameEvents': _i1.MethodStreamConnector(
+          name: 'getGameEvents',
+          params: {
+            'gameId': _i1.ParameterDescription(
+              name: 'gameId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+            Map<String, Stream> streamParams,
+          ) =>
+              (endpoints['game'] as _i2.GameEndpoint).getGameEvents(
+            session,
+            params['gameId'],
+          ),
+        ),
         'getPlayers': _i1.MethodStreamConnector(
           name: 'getPlayers',
           params: {

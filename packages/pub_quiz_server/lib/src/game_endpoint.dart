@@ -24,6 +24,9 @@ class GameEndpoint extends Endpoint {
     return gameId;
   }
 
+  Stream<GameEvent> getGameEvents(Session session, int gameId) =>
+      session.messages.createStream(Topics.game(gameId));
+
   Stream<Player> getPlayers(Session session, int gameId) async* {
     final controller = StreamController<Player>();
 

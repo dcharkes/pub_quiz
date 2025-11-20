@@ -3,23 +3,23 @@ on:
   push:
     branches: [main]
     paths:
-      - "packages/pub_quiz_server/**"
-      - "packages/pub_quiz_shared/**"
-      - ".github/workflows/deployment-docker.yml"
+      - 'packages/pub_quiz_server/**'
+      - 'packages/pub_quiz_shared/**'
+      - '.github/workflows/deployment-docker.yml'
   workflow_dispatch:
     inputs:
       target:
-        description: "Target"
+        description: 'Target'
         required: true
-        default: "production"
+        default: 'production'
         type: choice
         options:
-          - "production"
+          - 'production'
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  GHCR_ORG: "dcharkes"
+  GHCR_ORG: 'dcharkes'
 
 jobs:
   build-and-push-image:
@@ -104,7 +104,7 @@ jobs:
           docker compose -f ./packages/pub_quiz_server/docker-compose.production.yaml pull
           docker compose -f ./packages/pub_quiz_server/docker-compose.production.yaml up -d
         env:
-          DOCKER_HOST: "ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+          DOCKER_HOST: 'ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}'
           # The database name
           POSTGRES_DB: ${{ secrets.SERVERPOD_DATABASE_NAME }}
           # The user name for the database
@@ -124,7 +124,7 @@ jobs:
           # This is the internal port number for the API server
           SERVERPOD_API_SERVER_PORT: 8080
           # The public scheme (http/https) for the API server
-          SERVERPOD_API_SERVER_PUBLIC_SCHEME: "https"
+          SERVERPOD_API_SERVER_PUBLIC_SCHEME: 'https'
           # The public host address of the Insights server
           SERVERPOD_INSIGHTS_SERVER_PUBLIC_HOST: ${{ secrets.SERVERPOD_INSIGHTS_SERVER_PUBLIC_HOST }}
           # The public port number for the Insights server
@@ -132,7 +132,7 @@ jobs:
           # This is the internal port number for the Insights server
           SERVERPOD_INSIGHTS_SERVER_PORT: 8081
           # The public scheme (http/https) for the Insights server
-          SERVERPOD_INSIGHTS_SERVER_PUBLIC_SCHEME: "https"
+          SERVERPOD_INSIGHTS_SERVER_PUBLIC_SCHEME: 'https'
           # The public host address of the Web server
           SERVERPOD_WEB_SERVER_PUBLIC_HOST: ${{ secrets.SERVERPOD_WEB_SERVER_PUBLIC_HOST }}
           # The public port number for the Web server
@@ -140,7 +140,7 @@ jobs:
           # This is the internal port number for the Web server
           SERVERPOD_WEB_SERVER_PORT: 8082
           # The public scheme (http/https) for the Web server
-          SERVERPOD_WEB_SERVER_PUBLIC_SCHEME: "https"
+          SERVERPOD_WEB_SERVER_PUBLIC_SCHEME: 'https'
           # The host address of the database
           # This is hardcoded since the connection is done internally through
           # the docker network. If you want to have access from the outside, you
@@ -167,6 +167,7 @@ jobs:
           ADMIN_URL: ${{ secrets.ADMIN_URL }}
           TV_URL: ${{ secrets.TV_URL }}
           PLAYER_URL: ${{ secrets.PLAYER_URL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: cleanup
         run: rm -rf ~/.ssh

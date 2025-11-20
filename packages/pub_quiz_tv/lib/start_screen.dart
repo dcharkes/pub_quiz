@@ -82,7 +82,6 @@ class _StartScreenState extends State<StartScreen> {
               },
               child: const Text('Start'),
             ),
-            const Spacer(),
             Text(
               'Waiting for players...',
               style: textTheme.displayLarge,

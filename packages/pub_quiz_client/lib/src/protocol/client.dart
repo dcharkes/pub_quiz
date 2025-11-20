@@ -156,12 +156,12 @@ class EndpointQuiz extends _i1.EndpointRef {
         {'quiz': quiz},
       );
 
-  _i2.Future<_i5.Quiz> generateQuiz({
+  _i2.Future<_i6.Quiz> generateQuiz({
     required int numberOfQuestions,
     required String style,
     required String topic,
   }) =>
-      caller.callServerEndpoint<_i5.Quiz>(
+      caller.callServerEndpoint<_i6.Quiz>(
         'quiz',
         'generateQuiz',
         {

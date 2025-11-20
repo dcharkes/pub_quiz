@@ -50,7 +50,7 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
               final answer = entry.value;
 
               return div(
-                classes: 'answer-item',
+                classes: 'grid',
                 [
                   input(
                     type: InputType.text,
@@ -88,6 +88,7 @@ class _QuizQuestionEditorState extends State<QuestionEditor> {
         ),
         button(
           onClick: component.onDelete,
+          classes: 'secondary',
           [
             i(classes: 'material-icons md-18', [text('delete')]),
             text('Delete'),

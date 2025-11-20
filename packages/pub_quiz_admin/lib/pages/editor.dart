@@ -43,8 +43,10 @@ class _QuizEditorState extends State<QuizEditor> {
 
   @override
   Component build(BuildContext context) {
-    return section([
-      h1(classes: 'page-header', [text('Quiz Editor')]),
+    return section(classes: 'container', [
+      header(classes: 'page-header', [
+        h1([text('Quiz Editor')]),
+      ]),
       if (_quiz != null)
         div([
           div(
@@ -100,36 +102,41 @@ class _QuizEditorState extends State<QuizEditor> {
               text('Add Question'),
             ],
           ),
-          button(
-            onClick: () {
-              final db = DbProvider.of(context).quiz;
-              final newQuiz = _quiz!.id == null
-                  ? db.createQuiz(_quiz!)
-                  : db.updateQuiz(_quiz!);
-              newQuiz.then((quiz) {
-                print(quiz.id);
-                if (mounted) {
-                  setState(() {
-                    _quiz = quiz;
+          div(
+            classes: 'grid',
+            [
+              button(
+                onClick: () {
+                  final db = DbProvider.of(context).quiz;
+                  final newQuiz = _quiz!.id == null
+                      ? db.createQuiz(_quiz!)
+                      : db.updateQuiz(_quiz!);
+                  newQuiz.then((quiz) {
+                    print(quiz.id);
+                    if (mounted) {
+                      setState(() {
+                        _quiz = quiz;
+                      });
+                    }
+                    Router.of(context).back();
                   });
-                }
-                Router.of(context).back();
-              });
-            },
-            classes: 'save-button',
-            [
-              i(classes: 'material-icons md-18', [text('save')]),
-              text('Save Quiz'),
-            ],
-          ),
-          button(
-            onClick: () {
-              Router.of(context).back();
-            },
-            classes: 'cancel-button',
-            [
-              i(classes: 'material-icons md-18', [text('cancel')]),
-              text('Cancel'),
+                },
+                classes: 'save-button',
+                [
+                  i(classes: 'material-icons md-18', [text('save')]),
+                  text('Save Quiz'),
+                ],
+              ),
+              button(
+                onClick: () {
+                  Router.of(context).back();
+                },
+                classes: 'cancel-button secondary',
+                [
+                  i(classes: 'material-icons md-18', [text('cancel')]),
+                  text('Cancel'),
+                ],
+              ),
             ],
           ),
         ]),

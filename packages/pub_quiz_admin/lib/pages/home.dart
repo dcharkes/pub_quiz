@@ -8,14 +8,13 @@ class Home extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    return div([
-      h1(classes: 'page-header', [text('Pub Quiz Admin')]),
-      div([
+    return section(classes: 'container', [
+      header(classes: 'page-header', [
+        h1([text('Pub Quiz Admin')]),
         button(
           onClick: () {
             Router.of(context).push('/edit');
           },
-          classes: 'add-quiz-button',
           [
             i(classes: 'material-icons md-18', [text('add')]),
             text('Add New Quiz'),

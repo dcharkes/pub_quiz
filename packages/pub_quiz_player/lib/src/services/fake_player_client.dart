@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
+import 'package:pub_quiz_shared/urls.dart';
 
 Stream<void> nowAndLater(Duration duration) async* {
   yield null;
@@ -17,6 +18,16 @@ Future<PlayerClient> connectFakeClient(String gameId) async {
     1, // fake gameId
     quizDescription: QuizDescription.fromQuiz(fakeQuiz),
     totalQuestions: fakeQuiz.questions.length,
+  );
+}
+
+Future<PlayerClient> connectRealClient(int gameId) async {
+  final client = Client(serverUrl);
+  return PlayerClient(
+    client.player,
+    gameId,
+    quizDescription: QuizDescription(title: 'My Quiz'), // TODO
+    totalQuestions: 10, // TODO
   );
 }
 

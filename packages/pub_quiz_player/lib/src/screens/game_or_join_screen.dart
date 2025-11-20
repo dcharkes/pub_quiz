@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pub_quiz_client/pub_quiz_client.dart';
+import 'package:pub_quiz_shared/urls.dart';
 import '../services/fake_player_client.dart';
 import '../services/persistence_service.dart';
 import 'game_screen.dart';
@@ -24,7 +26,7 @@ class _GameOrJoinScreenState extends State<GameOrJoinScreen> {
   @override
   void initState() {
     super.initState();
-    _clientFuture = connectFakeClient(widget.gameId);
+    _clientFuture = connectRealClient(int.parse(widget.gameId));
   }
 
   @override
@@ -32,7 +34,7 @@ class _GameOrJoinScreenState extends State<GameOrJoinScreen> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.gameId != widget.gameId) {
       _disposeClient();
-      _clientFuture = connectFakeClient(widget.gameId);
+      _clientFuture = connectRealClient(int.parse(widget.gameId));
     }
   }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:args/args.dart';
+import 'package:collection/collection.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 
 final parser = ArgParser()
@@ -43,5 +44,14 @@ void main(List<String> args) async {
       answerIndex,
       DateTime.now(),
     );
+  }
+
+  final results = await client.player.getResults(gameId);
+  final leaderboard = results.scores.sorted(
+    (a, b) => b.score.compareTo(a.score),
+  );
+  print('Leaderboard');
+  for (final p in leaderboard) {
+    print('${p.name}: ${p.score}');
   }
 }

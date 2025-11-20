@@ -16,11 +16,11 @@ class _StandingsScreenState extends State<StandingsScreen> {
   late final Future<Game> gameFuture;
 
   @override
-  void initState() {
+  void didChangeDependencies() {
     gameFuture = ClientProvider.of(
       context,
     ).player.getGame(widget.pin);
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override
@@ -40,9 +40,9 @@ class _StandingsScreenState extends State<StandingsScreen> {
             itemCount: players.length,
             itemBuilder: (context, index) {
               return ListTile(
-                trailing: Text('#$index'),
+                leading: Text('#${index + 1}'),
                 title: Text(players[index].name),
-                leading: Text(players[index].score.toString()),
+                trailing: Text(players[index].score.toString()),
               );
             },
           );

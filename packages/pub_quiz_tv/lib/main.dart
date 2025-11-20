@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 import 'package:pub_quiz_shared/urls.dart';
@@ -9,6 +10,8 @@ import 'code_screen.dart';
 import 'start_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy(); // Removes the hash from the URL
   final client = Client(serverUrl);
 
   runApp(

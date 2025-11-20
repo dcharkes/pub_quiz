@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pub_quiz_client/pub_quiz_client.dart';
 import 'package:pub_quiz_shared/urls.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -75,19 +76,27 @@ class _StartScreenState extends State<StartScreen> {
               ],
             ),
             const Spacer(),
-            if (_players.isEmpty) ...[
-              Text(
-                'Waiting for players...',
-                style: textTheme.displayLarge,
-              ),
-            ] else ...[
-              Wrap(
-                children: [
-                  for (final player in _players) Text(player.name),
-                ],
-              ),
-            ],
+            Text(
+              'Waiting for players...',
+              style: textTheme.displayLarge,
+            ),
             const Spacer(),
+            Wrap(
+              children: [
+                for (final player in _players)
+                  Text(
+                    player.name,
+                    style: textTheme.displayLarge,
+                  ),
+              ],
+            ),
+            const Spacer(),
+            FilledButton(
+              onPressed: () {
+                context.go('/game/${widget.pin}/questions');
+              },
+              child: const Text('Start'),
+            ),
           ],
         ),
       ),

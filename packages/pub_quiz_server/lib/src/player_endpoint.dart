@@ -52,6 +52,11 @@ class PlayerEndpoint extends Endpoint {
       return 0;
     }
 
+    if (!answerTime.isBefore(game.deadline)) {
+      // No score after a deadline.
+      return 0;
+    }
+
     // User gets 500 points for the correct answer + 500 points depending
     // on the time left.
     final questionDuration = game.deadline

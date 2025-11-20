@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:pub_quiz_server/src/generated/protocol.dart';
 import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
 
 const oneMinute = Duration(minutes: 1);
+const oneMicro = Duration(microseconds: 1);
+
 void main() {
   withServerpod('e2e', rollbackDatabase: .disabled, (
     sessionBuilder,
@@ -24,33 +27,39 @@ void main() {
       return endpoints.game.startGame(sessionBuilder, quizId);
     }
 
-    Future<void> setQuestion(int gameId, int index) =>
-        endpoints.game.setQuestion(sessionBuilder, gameId, index, oneMinute);
-    
+    Future<void> setQuestion(
+      int gameId,
+      int index, [
+      Duration duration = oneMinute,
+    ]) => endpoints.game.setQuestion(sessionBuilder, gameId, index, duration);
+
+    Future<int> joinGame(int gameId, [String name = 'Hodor']) =>
+        endpoints.player.joinGame(sessionBuilder, gameId, name);
+
+    Future<int> answer(
+      int playerId,
+      int questionIndex,
+      int answerIndex,
+    ) => endpoints.player.recordAnswer(
+      sessionBuilder,
+      playerId,
+      questionIndex,
+      answerIndex,
+      DateTime.now(),
+    );
 
     test('can start games', () async {
       expect(await startGame(), isNotNull);
     });
 
     test('player can join games', () async {
-      expect(
-        await endpoints.player.joinGame(
-        sessionBuilder,
-          await startGame(),
-        'Hodor',
-        ),
-        isNotNull,
-      );
+      expect(await joinGame(await startGame()), isNotNull);
     });
 
     test('joined player gets the current question', () async {
       final gameId = await startGame();
       await setQuestion(gameId, 5);
-      await endpoints.player.joinGame(
-        sessionBuilder,
-        gameId,
-        'Hodor',
-      );
+      await joinGame(gameId);
       final question = await endpoints.player
           .getQuestions(sessionBuilder, gameId)
           .first;
@@ -59,27 +68,22 @@ void main() {
 
     test('joined player gets the question once the game sets it', () async {
       final gameId = await startGame();
-      await endpoints.player.joinGame(sessionBuilder, gameId, 'Hodor');
+      await joinGame(gameId);
       final questionFuture = endpoints.player
           .getQuestions(sessionBuilder, gameId)
           .first;
       // Expect that there's no question as the game hasn't started.
       await expectLater(
-        questionFuture.timeout(const Duration(microseconds: 1)),
+        questionFuture.timeout(oneMicro),
         throwsA(isA<TimeoutException>()),
       );
-      await endpoints.game.setQuestion(
-        sessionBuilder,
-        gameId,
-        0,
-        oneMinute
-      );
+      await endpoints.game.setQuestion(sessionBuilder, gameId, 0, oneMinute);
       final question = await questionFuture;
       expect(question.index, 0);
     });
     test('player gets all questions', () async {
       final gameId = await startGame();
-      await endpoints.player.joinGame(sessionBuilder, gameId, 'Hodor');
+      await joinGame(gameId);
       var ack = Completer<LiveQuestion>();
       final questionsSubscription = endpoints.player
           .getQuestions(sessionBuilder, gameId)
@@ -92,6 +96,91 @@ void main() {
       await setQuestion(gameId, 1);
       expect((await ack.future).index, 1);
       await questionsSubscription.cancel();
+    });
+
+    test('player gets scores for the right answer', () async {
+      final gameId = await startGame();
+      final playerId = await joinGame(gameId);
+      await setQuestion(gameId, 0);
+      final questionsQueue = StreamQueue<LiveQuestion>(
+        endpoints.player.getQuestions(sessionBuilder, gameId),
+      );
+      final question = await questionsQueue.next;
+      final score = await answer(
+        playerId,
+        question.index,
+        question.question.answers.indexed.firstWhere((e) => e.$2.correct).$1,
+      );
+      expect(score, greaterThan(500));
+      await questionsQueue.cancel();
+    });
+
+    test('player gets no score for the wrong answer', () async {
+      final gameId = await startGame();
+      final playerId = await joinGame(gameId);
+      await setQuestion(gameId, 0);
+      final questionsQueue = StreamQueue<LiveQuestion>(
+        endpoints.player.getQuestions(sessionBuilder, gameId),
+      );
+      final question = await questionsQueue.next;
+      final score = await answer(
+        playerId,
+        question.index,
+        question.question.answers.indexed.firstWhere((e) => !e.$2.correct).$1,
+      );
+      expect(score, 0);
+      await questionsQueue.cancel();
+    });
+
+    test('player gets no score answering after deadline', () async {
+      final gameId = await startGame();
+      final playerId = await joinGame(gameId);
+      await setQuestion(gameId, 0, oneMicro);
+      final questionsQueue = StreamQueue<LiveQuestion>(
+        endpoints.player.getQuestions(sessionBuilder, gameId),
+      );
+      final question = await questionsQueue.next;
+      print('Question deadline: ${question.deadline}');
+      while (DateTime.now().isBefore(question.deadline)) {
+        await Future<void>.delayed(oneMicro);
+      }
+      final score = await answer(
+        playerId,
+        question.index,
+        question.question.answers.indexed.firstWhere((e) => e.$2.correct).$1,
+      );
+      expect(score, 0);
+      await questionsQueue.cancel();
+    });
+
+    test('player can get game results', () async {
+      final gameId = await startGame();
+      final player1 = await joinGame(gameId, 'Alice');
+      final player2 = await joinGame(gameId, 'Bob');
+
+      // Get player streams, but don't use questions, just make sure the
+      // streams are closed when the game is done.
+      final player1done = Completer<void>();
+      final player2done = Completer<void>();
+      endpoints.player
+          .getQuestions(sessionBuilder, gameId)
+          .listen((_) {}, onDone: () => player1done.complete(null));
+      endpoints.player
+          .getQuestions(sessionBuilder, gameId)
+          .listen((_) {}, onDone: () => player2done.complete(null));
+
+      for (var i = 0; i < fakeQuiz.questions.length; i++) {
+        await setQuestion(gameId, i);
+        await answer(player1, i, 1);
+        await answer(player2, i, 2);
+      }
+
+      final result = await endpoints.game.finishGame(sessionBuilder, gameId);
+      final scores = {for (final p in result.scores) p.name: p.score};
+
+      await (player1done.future, player2done.future).wait;
+      expect(scores['Alice'], greaterThan(0));
+      expect(scores['Bob'], greaterThan(0));
     });
   });
 }

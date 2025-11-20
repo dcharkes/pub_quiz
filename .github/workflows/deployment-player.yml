@@ -1,0 +1,83 @@
+name: Deploy Player App
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/pub_quiz_player/**"
+      - ".github/workflows/deployment-player.yml"
+      - "packages/pub_quiz_server/docker-compose.production.yaml"
+  workflow_dispatch:
+
+jobs:
+  build-player-app:
+    name: Build Player Web App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/pub_quiz_player
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Web App
+        run: >
+          flutter build web --release 
+          --dart-define=SERVERPOD_API_SERVER_PUBLIC_HOST=${{ secrets.SERVERPOD_API_SERVER_PUBLIC_HOST }} --dart-define=PLAYER_URL=${{ secrets.PLAYER_URL }}
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: player-app-build
+          path: packages/pub_quiz_player/build/web
+          if-no-files-found: error
+
+  deploy-player-app:
+    needs: build-player-app
+    name: Deploy Player App to Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: player-app-build
+          path: build_output
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /var/www/pub_quiz_player && rm -rf /var/www/pub_quiz_player/*"
+          
+          scp -r build_output/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/pub_quiz_player/
+
+          scp packages/pub_quiz_server/docker-compose.production.yaml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/docker-compose.production.yaml
+
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            touch .env
+            
+            sed -i '/^PLAYER_URL=/d' .env
+            echo 'PLAYER_URL=${{ secrets.PLAYER_URL }}' >> .env
+            
+            docker compose -f ~/docker-compose.production.yaml up -d --no-deps player-frontend
+          "
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -rf ~/.ssh

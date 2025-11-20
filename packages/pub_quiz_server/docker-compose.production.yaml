@@ -119,6 +119,20 @@ services:
       - "traefik.http.services.admin.loadbalancer.server.port=80"
     networks:
       - serverpod-network
+  
+  tv-frontend:
+    image: nginx:alpine
+    restart: on-failure
+    volumes:
+      - /var/www/pub_quiz_tv:/usr/share/nginx/html:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tv.rule=Host(`${TV_URL}`)"
+      - "traefik.http.routers.tv.entrypoints=websecure"
+      - "traefik.http.routers.tv.tls.certresolver=myresolver"
+      - "traefik.http.services.tv.loadbalancer.server.port=80"
+    networks:
+      - serverpod-network
 
 networks:
   serverpod-network:

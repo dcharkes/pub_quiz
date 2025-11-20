@@ -1,20 +1,20 @@
-name: Deploy Jaspr Admin App
+name: Deploy TV App
 on:
   push:
     branches: [main]
     paths:
-      - "packages/pub_quiz_admin/**"
-      - ".github/workflows/deployment-jaspr.yml"
+      - "packages/pub_quiz_tv/**"
+      - ".github/workflows/deploy-tv.yml"
       - "packages/pub_quiz_server/docker-compose.production.yaml"
   workflow_dispatch:
 
 jobs:
-  build-jaspr-app:
-    name: Build Jaspr App
+  build-tv-app:
+    name: Build Flutter Web TV App
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./packages/pub_quiz_admin
+        working-directory: ./packages/pub_quiz_tv
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,22 +28,21 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Install Jaspr CLI
-        run: dart pub global activate jaspr_cli
-
-      - name: Build Jaspr app
-        run: jaspr build --dart-define=SERVER_URL=${{ secrets.ADMIN_URL }} --dart-define=SERVERPOD_API_SERVER_PUBLIC_HOST=${{ secrets.SERVERPOD_API_SERVER_PUBLIC_HOST }} --dart-define=${{ secrets.TV_URL }}
+      - name: Build Web App
+        run: >
+          flutter build web --release 
+          --dart-define=SERVERPOD_API_SERVER_PUBLIC_HOST=${{ secrets.SERVERPOD_API_SERVER_PUBLIC_HOST }}
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: admin-app-build
-          path: packages/pub_quiz_admin/build/jaspr
+          name: tv-app-build
+          path: packages/pub_quiz_tv/build/web
           if-no-files-found: error
 
-  deploy-jaspr-app:
-    needs: build-jaspr-app
-    name: Deploy Jaspr App to Server
+  deploy-tv-app:
+    needs: build-tv-app
+    name: Deploy TV App to Server
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,7 +51,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: admin-app-build
+          name: tv-app-build
           path: build_output
 
       - name: Setup SSH
@@ -64,19 +63,21 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /var/www/pub_quiz_admin && rm -rf /var/www/pub_quiz_admin/*"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /var/www/pub_quiz_tv && rm -rf /var/www/pub_quiz_tv/*"
           
-          scp -r build_output/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/pub_quiz_admin/
+          scp -r build_output/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/pub_quiz_tv/
 
           scp packages/pub_quiz_server/docker-compose.production.yaml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/docker-compose.production.yaml
 
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             touch .env
-            sed -i '/^ADMIN_URL=/d' .env
-            echo 'ADMIN_URL=${{ secrets.ADMIN_URL }}' >> .env
             
-            docker compose -f ~/docker-compose.production.yaml up -d --no-deps admin-frontend
+            sed -i '/^TV_URL=/d' .env
+            echo 'TV_URL=${{ secrets.TV_URL }}' >> .env
+            
+            docker compose -f ~/docker-compose.production.yaml up -d --no-deps tv-frontend
           "
+
       - name: Cleanup SSH key
         if: always()
         run: rm -rf ~/.ssh

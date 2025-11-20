@@ -164,6 +164,8 @@ jobs:
           # The token used to connect with insights must be at least 20 chars
           SERVERPOD_SERVICE_SECRET: ${{ secrets.SERVERPOD_SERVICE_SECRET }}
           ADMIN_URL: ${{ secrets.ADMIN_URL }}
+          TV_URL: ${{ secrets.TV_URL }}
+          PLAYER_URL: ${{ secrets.PLAYER_URL }}
 
       - name: cleanup
         run: rm -rf ~/.ssh

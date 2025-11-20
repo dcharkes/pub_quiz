@@ -33,7 +33,7 @@ jobs:
       - name: Build Web App
         run: >
           flutter build web --release 
-          --dart-define=SERVERPOD_API_SERVER_PUBLIC_HOST=${{ secrets.SERVERPOD_API_SERVER_PUBLIC_HOST }}
+          --dart-define=SERVERPOD_API_SERVER_PUBLIC_HOST=${{ secrets.SERVERPOD_API_SERVER_PUBLIC_HOST }} --dart-define=PLAYER_URL=${{ secrets.PLAYER_URL }}
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4

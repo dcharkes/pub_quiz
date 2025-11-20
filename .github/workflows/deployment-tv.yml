@@ -4,7 +4,7 @@ on:
     branches: [main]
     paths:
       - "packages/pub_quiz_tv/**"
-      - ".github/workflows/deploy-tv.yml"
+      - ".github/workflows/deployment-tv.yml"
       - "packages/pub_quiz_server/docker-compose.production.yaml"
   workflow_dispatch:
 

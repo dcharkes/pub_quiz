@@ -87,6 +87,7 @@ class _GenerateQuizPageState extends State<GenerateQuizPage> {
               });
             },
             [
+              option(value: '5', [text('5')]),
               option(value: '10', [text('10')]),
               option(value: '15', [text('15')]),
               option(value: '20', [text('20')]),

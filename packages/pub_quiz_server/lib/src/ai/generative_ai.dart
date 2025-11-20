@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:google_generative_ai/google_generative_ai.dart';
 
@@ -58,5 +59,10 @@ The output must be valid JSON that matches the specific structure below.
   );
   final jsonResponse = json.decode(response.text!) as Map<String, dynamic>;
   final quiz = Quiz.fromJson(jsonResponse);
+
+  for (final question in quiz.questions) {
+    question.answers.shuffle(Random());
+  }
+
   return quiz;
 }

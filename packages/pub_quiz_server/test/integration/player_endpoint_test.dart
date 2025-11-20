@@ -5,57 +5,47 @@ import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
 
+const oneMinute = Duration(minutes: 1);
 void main() {
   withServerpod('e2e', rollbackDatabase: .disabled, (
     sessionBuilder,
     endpoints,
   ) {
-    var shortQuizId = -1;
+    var quizId = -1;
 
     setUp(() async {
-      shortQuizId = (await endpoints.quiz.createQuiz(
-        sessionBuilder,
-        shortQuiz,
-      )).id!;
-      print('shortQuizId: $shortQuizId');
-    });
-
-    Future<int> startGame() async {
-      return endpoints.game.startGame(sessionBuilder, shortQuizId);
-    }
-
-    test('can start games', () async {
-      final quiz = await endpoints.quiz.readQuiz(sessionBuilder, shortQuizId);
-      expect(quiz, isNotNull);
-      final gameId = await startGame();
-      expect(gameId, isNotNull);
-    });
-
-    test('player can join games', () async {
-      final quiz = await endpoints.quiz.readQuiz(sessionBuilder, shortQuizId);
-      expect(quiz, isNotNull);
-      final gameId = await startGame();
-      final playerId = await endpoints.player.joinGame(
-        sessionBuilder,
-        gameId,
-        'Hodor',
-      );
-      expect(playerId, isNotNull);
-    });
-
-    test('joined player gets the current question', () async {
-      final quizId = (await endpoints.quiz.createQuiz(
+      quizId = (await endpoints.quiz.createQuiz(
         sessionBuilder,
         fakeQuiz,
       )).id!;
-      final gameId = await endpoints.game.startGame(sessionBuilder, quizId);
+    });
 
-      await endpoints.game.setQuestion(
+    Future<int> startGame() async {
+      return endpoints.game.startGame(sessionBuilder, quizId);
+    }
+
+    Future<void> setQuestion(int gameId, int index) =>
+        endpoints.game.setQuestion(sessionBuilder, gameId, index, oneMinute);
+    
+
+    test('can start games', () async {
+      expect(await startGame(), isNotNull);
+    });
+
+    test('player can join games', () async {
+      expect(
+        await endpoints.player.joinGame(
         sessionBuilder,
-        gameId,
-        5,
-        const Duration(seconds: 1),
+          await startGame(),
+        'Hodor',
+        ),
+        isNotNull,
       );
+    });
+
+    test('joined player gets the current question', () async {
+      final gameId = await startGame();
+      await setQuestion(gameId, 5);
       await endpoints.player.joinGame(
         sessionBuilder,
         gameId,
@@ -82,28 +72,29 @@ void main() {
         sessionBuilder,
         gameId,
         0,
-        const Duration(seconds: 1),
+        oneMinute
       );
       final question = await questionFuture;
       expect(question.index, 0);
     });
+    test('player gets all questions', () async {
+      final gameId = await startGame();
+      await endpoints.player.joinGame(sessionBuilder, gameId, 'Hodor');
+      var ack = Completer<LiveQuestion>();
+      final questionsSubscription = endpoints.player
+          .getQuestions(sessionBuilder, gameId)
+          .listen((q) {
+            ack.complete(q);
+          });
+      await setQuestion(gameId, 0);
+      expect((await ack.future).index, 0);
+      ack = Completer<LiveQuestion>();
+      await setQuestion(gameId, 1);
+      expect((await ack.future).index, 1);
+      await questionsSubscription.cancel();
+    });
   });
 }
-
-final shortQuiz = Quiz(
-  title: 'Dart & Flutter Fundamentals',
-  questions: [
-    Question(
-      question: 'What is the package manager for Dart?',
-      answers: [
-        Answer(text: 'npm', correct: false),
-        Answer(text: 'pub', correct: true),
-        Answer(text: 'yarn', correct: false),
-        Answer(text: 'pip', correct: false),
-      ],
-    ),
-  ],
-);
 
 final fakeQuiz = Quiz(
   title: 'Dart & Flutter Fundamentals',

@@ -234,20 +234,22 @@ void main() {
       // p1 answers.
       final p1score = await answer(p1, 0, 1);
       final p1answer = await queue.next;
-      print('got answer event');
       expect(p1answer.type, GameEventType.player_answered);
       expect(p1answer.player!.id, p1);
       expect(p1answer.player!.score, p1score);
 
       // p2 answers.
       final p2score = await answer(p2, 0, 2);
-      print('p2 ($p2) answered');
       final p2answer = await queue.next;
-      print('got answer event');
       expect(p2answer.type, GameEventType.player_answered);
       expect(p2answer.player!.id, p2);
       expect(p2answer.player!.score, p2score);
 
+      // game finishes.
+      await endpoints.game.finishGame(sessionBuilder, gameId);
+      final endEvent = await queue.next;
+      expect(endEvent.type, GameEventType.end);
+      expect(endEvent.game.players!.length, 2);
       await queue.cancel();
     });
   });

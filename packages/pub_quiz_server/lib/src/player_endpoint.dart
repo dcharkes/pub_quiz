@@ -74,8 +74,6 @@ class PlayerEndpoint extends Endpoint {
         player: updatedPlayer,
       ),
     );
-    print('posted player_answered event for player ${updatedPlayer.id}');
-
     return score;
   }
 

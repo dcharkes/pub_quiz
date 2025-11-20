@@ -597,7 +597,7 @@ class _QuizEndpoint {
     });
   }
 
-  _i3.Future<_i7.Quiz> generateQuiz(
+  _i3.Future<_i8.Quiz> generateQuiz(
     _i1.TestSessionBuilder sessionBuilder, {
     required int numberOfQuestions,
     required String style,
@@ -624,7 +624,7 @@ class _QuizEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Quiz>);
+        ) as _i3.Future<_i8.Quiz>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

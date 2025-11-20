@@ -88,7 +88,7 @@ class GameEndpoint extends Endpoint {
     if (game == null) {
       throw Exception('Game not found');
     }
-    final updatedGame = await Game.db.updateRow(
+    await Game.db.updateRow(
       session,
       game.copyWith(
         currentQuestion: game.quiz!.questions.length,
@@ -96,17 +96,21 @@ class GameEndpoint extends Endpoint {
         questionStart: DateTime.fromMicrosecondsSinceEpoch(0),
       ),
     );
+    final updatedGame = (await Game.db.findById(
+      session,
+      gameId,
+      include: Game.include(
+        quiz: Quiz.include(),
+        players: Player.includeList(),
+      ),
+    ))!;
     await session.messages.postMessage(
       Topics.game(gameId),
       GameEvent(game: updatedGame, type: GameEventType.end),
     );
 
     return GameResult(
-      scores: (await Game.db.findById(
-        session,
-        gameId,
-        include: Game.include(players: Player.includeList()),
-      ))!.players!,
+      scores: updatedGame.players!,
     );
   }
 }

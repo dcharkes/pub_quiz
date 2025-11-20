@@ -51,8 +51,7 @@ class PlayerClient {
   }
 
   Future<void> join(String name) async {
-    final player = await _endpoint.joinGame(_gameId, name);
-    _playerId = player.id!;
+    _playerId = await _endpoint.joinGame(_gameId, name);
 
   }
 
@@ -146,13 +145,8 @@ class FakeEndpointPlayer implements EndpointPlayer {
   int _correctAnswers = 0;
 
   @override
-  Future<Player> joinGame(int gameId, String name) async {
-    return Player(
-      id: 123,
-      gameId: gameId,
-      name: name,
-      score: 0,
-    );
+  Future<int> joinGame(int gameId, String name) async {
+    return 123;
   }
 
   @override

@@ -6,7 +6,11 @@ html {
 body {
     height: 100%;
     margin: 0;
-    padding: 2rem;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 2rem 2rem 2rem 2rem;
 }
 
 .page-header {

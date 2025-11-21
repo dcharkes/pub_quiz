@@ -21,7 +21,7 @@ class QuestionScreen extends StatefulWidget {
 
 class _QuestionScreenState extends State<QuestionScreen> {
   int currentQuestion = 0;
-  final maxTime = 10;
+  final maxTime = 30;
   int timeLeft = 0;
   Game? _game;
   bool _showAnswer = false;
